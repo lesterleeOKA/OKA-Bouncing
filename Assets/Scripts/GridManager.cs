@@ -11,11 +11,14 @@ public class GridManager
     public int gridRow = 4;
     public int gridColumn = 4;
     public int maxRetries = 10;
-    private Cell[,] cells;
+    public Cell[,] cells;
+    public List<int> characterPositionsCellIds = new List<int>();
+    public List<int> disableCellIds = new List<int>();
     public List<int> showCellIdList = new List<int>();
-    private List<Vector2Int> availablePositions = null;
+    public List<Vector2Int> availablePositions = null;
     public bool showQuestionWordPosition = false;
     public bool isMCType = false;
+    public int gridCount = 0;
 
     public Cell[,] CreateGrid(string[] multipleWords = null, string spellWord = null, Sprite cellSprite = null)
     {
@@ -33,16 +36,6 @@ public class GridManager
 
         this.cells = new Cell[this.gridRow, this.gridColumn];
         this.availablePositions = new List<Vector2Int>();
-
-        for (int i = 0; i < this.gridRow; i++)
-        {
-            for (int j = 0; j < this.gridColumn; j++)
-            {
-                this.availablePositions.Add(new Vector2Int(i, j));
-            }
-        }
-        System.Random random = new System.Random();
-        this.availablePositions = this.availablePositions.OrderBy(x => random.Next()).ToList();
         for (int i = 0; i < this.gridRow; i++)
         {
             for (int j = 0; j < this.gridColumn; j++)
@@ -54,28 +47,66 @@ public class GridManager
                 cell.row = i;
                 cell.col = j;
                 this.cells[i, j] = cell;
+                this.cells[i, j].cellId = this.gridCount;
+                this.availablePositions.Add(new Vector2Int(i, j));
+                this.gridCount += 1;
             }
         }
+        //System.Random random = new System.Random();
+        //this.availablePositions = this.availablePositions.OrderBy(x => random.Next()).ToList();
 
         this.showCellIdList = this.GenerateUniqueRandomIntegers(this.isMCType ? multipleWords.Length : letters.Length, 
                                                                 0, 
                                                                 cells.Length);
 
+        this.characterPositionsCellIds = this.GenerateUniqueRandomIntegers(4, 0, cells.Length, this.showCellIdList);
+
         for (int i=0; i < this.showCellIdList.Count; i++)
         {
             Vector2Int position =  this.availablePositions[this.showCellIdList[i]];
-            this.cells[position.x, position.y].SetTextContent(this.isMCType ? multipleWords[i]: letters[i].ToString(),                                                     default, 
-                                                              cellSprite);
+            this.cells[position.x, position.y].SetTextContent(this.isMCType ? multipleWords[i]: letters[i].ToString(),                         default, cellSprite);
         }
         
         return cells;
     }
 
-    public List<int> GenerateUniqueRandomIntegers(int count, int minValue, int maxValue)
+    public Vector3 newCharacterPosition
     {
-        HashSet<int> uniqueIntegers = new HashSet<int>(); System.Random random = new System.Random(); while (uniqueIntegers.Count < count) { int randomNumber = random.Next(minValue, maxValue); uniqueIntegers.Add(randomNumber); }
+        get
+        {
+            var id = this.GenerateUniqueRandomIntegers(1, 0, this.cells.Length, this.showCellIdList, this.characterPositionsCellIds)[0];
+            var newCellVector = this.availablePositions[id];
+            return this.cells[newCellVector.x, newCellVector.y].transform.localPosition;
+        }
+    }
+
+    public List<int> GenerateUniqueRandomIntegers(int count, int minValue, int maxValue, params List<int>[] excludedLists)
+    {
+        HashSet<int> uniqueIntegers = new HashSet<int>();
+        HashSet<int> combinedExcludedSet = new HashSet<int>(this.disableCellIds);
+
+        // Combine all excluded lists into a single set
+        foreach (var list in excludedLists)
+        {
+            foreach (var item in list)
+            {
+                combinedExcludedSet.Add(item);
+            }
+        }
+
+        System.Random random = new System.Random();
+        while (uniqueIntegers.Count < count)
+        {
+            int randomNumber = random.Next(minValue, maxValue);
+            if (!combinedExcludedSet.Contains(randomNumber))
+            {
+                uniqueIntegers.Add(randomNumber);
+            }
+        }
+
         return new List<int>(uniqueIntegers);
     }
+
 
     char[] ShuffleStringToCharArray(string input)
     {
@@ -113,8 +144,8 @@ public class GridManager
             this.isMCType = false;
         }
 
-        System.Random random = new System.Random();
-        this.availablePositions = this.availablePositions.OrderBy(x => random.Next()).ToList();
+        //System.Random random = new System.Random();
+        //this.availablePositions = this.availablePositions.OrderBy(x => random.Next()).ToList();
 
         for (int i = 0; i < this.gridRow; i++)
         {
@@ -127,10 +158,11 @@ public class GridManager
         this.showCellIdList = this.GenerateUniqueRandomIntegers(this.isMCType ? multipleWords.Length : letters.Length,
                                                                 0,
                                                                 cells.Length);
+        this.characterPositionsCellIds = this.GenerateUniqueRandomIntegers(4, 0, cells.Length, this.showCellIdList);
 
         for (int i = 0; i < this.showCellIdList.Count; i++)
         {
-            Vector2Int position = availablePositions[this.showCellIdList[i]];
+            Vector2Int position = this.availablePositions[this.showCellIdList[i]];
             this.cells[position.x, position.y].SetTextContent(this.isMCType ? multipleWords[i] : letters[i].ToString());
         }
     }

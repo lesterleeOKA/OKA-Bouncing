@@ -1,14 +1,17 @@
+﻿using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class PlayerController : UserData
 {
-    public FixedJoystick joystick;
+    public CharacterMoveController moveButton;
     public BloodController bloodController;
+    public CharacterStatus characterStatus = CharacterStatus.idling;
     public Scoring scoring;
     public string answer = string.Empty;
     public bool IsCorrect = false;
@@ -19,27 +22,32 @@ public class PlayerController : UserData
     public float speed;
     [HideInInspector]
     public Transform characterTransform;
-    private float limitMovingYOffsetPercentage = 0.7f;
     [HideInInspector]
     public Canvas characterCanvas = null;
     public Vector3 startPosition = Vector3.zero;
     public int characterOrder = 11;
     private CharacterAnimation characterAnimation = null;
     private TextMeshProUGUI answerBox = null;
-    private bool isWalking = false;
     public List<Cell> collectedCell = new List<Cell>();
-    public SortRoad highestRoad = null;
-    public StayTrail stayTrail = StayTrail.startPoints;
     public float countGetAnswerAtStartPoints = 2f;
     private float countAtStartPoints = 0f;
 
-    public void Init(CharacterSet characterSet = null, Sprite[] defaultAnswerBoxes = null)
+    private RectTransform rectTransform = null;
+    public float rotationSpeed = 200f; // Speed of rotation
+    public float moveSpeed = 5f; // Speed of movement
+    private Rigidbody2D rb = null;
+    public bool isRotating = true;
+    private float randomDirection;
+    private Vector2 moveDirection;
+
+    public void Init(CharacterSet characterSet = null, Sprite[] defaultAnswerBoxes = null, Vector3 startPos = default)
     {
+        this.rb = GetComponent<Rigidbody2D>();
+        this.SetRandomRotationDirection();
+
         this.countAtStartPoints = this.countGetAnswerAtStartPoints;
         this.updateRetryTimes(false);
-        float posX = UnityEngine.Random.Range(-800f, 800f);
-        float posY = UnityEngine.Random.Range(-550f, -700f);
-        this.startPosition = new Vector3(posX, posY);
+        this.startPosition = startPos;
         this.characterTransform = this.transform;
         this.characterTransform.localPosition = this.startPosition;
         this.characterCanvas = this.GetComponent<Canvas>();
@@ -52,9 +60,10 @@ public class PlayerController : UserData
             this.answerBox = this.answerBoxCg.GetComponentInChildren<TextMeshProUGUI>();
         }
 
-        if (this.joystick == null)
+        if (this.moveButton == null)
         {
-            this.joystick = GameObject.FindGameObjectWithTag("P" + this.RealUserId + "-controller").GetComponent<FixedJoystick>();
+            this.moveButton = GameObject.FindGameObjectWithTag("P" + this.RealUserId + "-controller").GetComponent<CharacterMoveController>();
+            this.moveButton.OnPointerClickEvent += this.StopRotation;
         }
 
         if (this.bloodController == null)
@@ -235,140 +244,81 @@ public class PlayerController : UserData
         onCompleted?.Invoke();
     }
 
-    public void characterReset()
+    public void characterReset(Vector3 newStartPostion = default)
     {
-        if(this.stayTrail == StayTrail.submitPoint)
+        this.randomDirection = UnityEngine.Random.Range(0, 2) == 0 ? 1f : -1f;
+        this.startPosition = newStartPostion;
+        this.characterCanvas.sortingOrder = this.characterOrder;
+        this.characterTransform.localPosition = this.startPosition;
+        this.collectedCell.Clear();
+    }
+
+    void FixedUpdate()
+    {
+        if (this.isRotating && this.rectTransform != null) { 
+            this.characterStatus = CharacterStatus.rotating;
+            Vector3 direction = Vector3.forward * rotationSpeed * Time.deltaTime * randomDirection;
+            this.rectTransform.Rotate(direction); 
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && this.UserId == 0) { 
+            this.isRotating = false; 
+            this.moveDirection = this.rectTransform.up;
+        }
+        else if (Input.GetKeyDown(KeyCode.F2))
         {
-            this.stayTrail = StayTrail.startPoints;
-            float posX = UnityEngine.Random.Range(-800f, 800f);
-            float posY = UnityEngine.Random.Range(-550f, -700f);
-            this.startPosition = new Vector3(posX, posY);
-            this.characterCanvas.sortingOrder = this.characterOrder;
-            this.characterTransform.localPosition = this.startPosition;
-            this.collectedCell.Clear();
+            var gridManager = GameController.Instance.gridManager;
+            this.playerReset(gridManager.newCharacterPosition);
+        }
+
+        if (!this.isRotating)
+        {
+            this.MoveForward();
         }
     }
 
-    public void playerReset()
+    void SetRandomRotationDirection()
     {
+        this.rectTransform = this.GetComponent<RectTransform>();
+        this.rb = GetComponent<Rigidbody2D>();
+        this.rb.gravityScale = 0;
+        this.randomDirection =  UnityEngine.Random.Range(0, 2) == 0 ? 1f : -1f;
+    }
+
+    public void StopRotation(BaseEventData data)
+    {
+        this.isRotating = false;
+        this.moveDirection = this.rectTransform.up;
+        this.characterStatus = CharacterStatus.moving;
+
+    }
+
+    void MoveForward()
+    {
+         /*Vector2 targetPosition = rectTransform.anchoredPosition + (moveDirection * moveSpeed * 1000); 
+         rectTransform.DOAnchorPos(targetPosition, 1000f).SetEase(Ease.Linear).SetSpeedBased(true);*/
+
+        this.rb.velocity = this.moveDirection * moveSpeed;
+        this.FaceDirection(this.moveDirection);
+    }
+
+    private void FaceDirection(Vector2 direction)
+    {
+        // Make sure the character visually faces the direction of movement
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        this.rb.angularVelocity = 0f;
+        transform.rotation = Quaternion.Euler(0, 0, angle - 90); // Subtract 90 to align "up" with the forward direction
+    }
+
+    public void playerReset(Vector3 newStartPostion = default)
+    {
+        this.rb.velocity = Vector2.zero;
+        this.rb.angularVelocity = 0f;
+        this.isRotating = true;
         this.deductAnswer();
         this.setAnswer("");
-        this.characterReset();
+        this.characterReset(newStartPostion);
         this.IsCheckedAnswer = false;
         this.IsCorrect = false;
-    }
-
-    public void Update()
-    {
-        if(this.joystick == null) return;
-        Vector2 direction = Vector2.zero;
-
-        if (this.characterCanvas.sortingOrder != 1)
-        {
-            direction = new Vector2(this.joystick.Horizontal, this.joystick.Vertical);
-
-            if(this.UserId == 0) // only player one can use
-            {
-                if (Input.GetKey(KeyCode.UpArrow))
-                {
-                    direction.y = 1;
-                }
-                else if (Input.GetKey(KeyCode.DownArrow))
-                {
-                    direction.y = -1;
-                }
-                if (Input.GetKey(KeyCode.LeftArrow))
-                {
-                    direction.x = -1;
-                }
-                else if (Input.GetKey(KeyCode.RightArrow))
-                {
-                    direction.x = 1;
-                }
-            }
-            
-            if (direction.magnitude > 1)
-            {
-                direction.Normalize();
-            }
-            this.speed = LoaderConfig.Instance.gameSetup.playersMovingSpeed;
-            Vector3 newPosition = this.characterTransform.position + (Vector3)direction * this.speed * Time.deltaTime;
-            newPosition.x = Mathf.Clamp(newPosition.x, -Camera.main.orthographicSize * Camera.main.aspect, Camera.main.orthographicSize * Camera.main.aspect);
-            newPosition.y = Mathf.Clamp(newPosition.y, -Camera.main.orthographicSize * this.limitMovingYOffsetPercentage, Camera.main.orthographicSize * (this.limitMovingYOffsetPercentage - 0.075f));
-
-            this.characterTransform.position = newPosition;
-            this.characterTransform.localScale = new Vector3(direction.x > 0 ? -1 : 1, 1, 1);
-            this.answerBox.transform.localScale = new Vector3(direction.x > 0 ? -1 : 1, 1, 1);            
-        }
-        else
-        {
-            this.characterTransform.localPosition = new Vector2(this.characterTransform.localPosition.x, 220f);
-        }
-
-        if (direction.magnitude > 0.1f)
-        {
-            if (!this.isWalking)
-            {
-                this.isWalking = true; // Set walking state
-                this.characterAnimation.PlayWalking(this.characterOrder); // Start walking animation
-            }
-        }
-        else
-        {
-            if (isWalking)
-            {
-                this.isWalking = false; // Reset walking state
-                this.characterAnimation.setIdling(); // Switch to idling animation
-            }
-        }
-
-        if (SortOrderController.Instance != null)
-        {
-            this.highestRoad = null;
-
-            for (int i = 0; i < SortOrderController.Instance.roads.Length; i++)
-            {
-                var road = SortOrderController.Instance.roads[i];
-                // Check if the character is above the road
-                if (this.characterTransform.position.y >= road.gameObject.transform.position.y)
-                {
-                    // Track the highest road that is below the character
-                    if (this.highestRoad == null || road.gameObject.transform.position.y > this.highestRoad.gameObject.transform.position.y)
-                    {
-                        this.highestRoad = road;
-                        var trailTag = this.highestRoad.gameObject.tag;
-                        switch (trailTag)
-                        {
-                            case "StarPoints":
-                                this.stayTrail = StayTrail.startPoints;
-                                break;
-                            case "Trails":
-                                this.stayTrail = StayTrail.trails;
-                                break;
-                            case "SubmitPoint":
-                                this.stayTrail = StayTrail.submitPoint;
-                                break;
-                            default:
-                                this.stayTrail = StayTrail.startPoints;
-                                break;
-                        }
-                    }
-                }
-            }
-
-            // If we found a road below the character, update the sorting order
-            if (this.highestRoad != null && this.characterCanvas != null)
-            {
-                int newOrder = this.highestRoad.orderLayer;
-                this.characterCanvas.sortingOrder = newOrder;
-            }
-            else
-            {
-                this.characterCanvas.sortingOrder = this.characterOrder;
-            }
-        }
-
-
     }
 
     public void setAnswer(string content)
@@ -468,21 +418,21 @@ public class PlayerController : UserData
                             this.collectedCell.RemoveAt(this.collectedCell.Count - 1);
                         }
                     }
+                    this.characterStatus = CharacterStatus.getWord;
                     this.setAnswer(cell.content.text);
                     this.collectedCell.Add(cell);
                     cell.SetTextStatus(false);
+                    this.rb.velocity = Vector2.zero;
+                    this.rb.angularVelocity = 0f;
+                    this.isRotating = true;
                 }
             }
         }
-        else if (other.CompareTag("MoveItem"))
+        else if (other.CompareTag("Wall"))
         {
-           //if(this.characterCanvas.sortingOrder == other.GetComponent<MovingObject>().sortLayer)
-            if(this.characterCanvas.sortingOrder != 1)
-            {
-                AudioController.Instance?.PlayAudio(8);
-                this.deductAnswer();
-                this.characterTransform.localPosition = this.startPosition;
-            }
+            AudioController.Instance?.PlayAudio(8);
+            this.deductAnswer();
+            StartCoroutine(this.delayResetCharacter());
         }
     }
 
@@ -498,6 +448,30 @@ public class PlayerController : UserData
                     LogController.Instance.debug("Player has exited the trigger!" + other.name);
                 }
             }
+        }
+    }
+
+    IEnumerator delayResetCharacter()
+    {
+        if (this.characterStatus != CharacterStatus.recover)
+        {
+            this.characterStatus = CharacterStatus.recover;
+            yield return new WaitForSeconds(2.0f);
+            var gridManager = GameController.Instance.gridManager;
+            this.playerReset(gridManager.newCharacterPosition);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(this.characterStatus == CharacterStatus.moving)
+        {
+            //Debug.Log("current" + this.rb.velocity.sqrMagnitude);
+            //Debug.Log("collision " + collision.rigidbody.velocity.sqrMagnitude);
+            collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);
+            this.rb.velocity = Vector2.zero;
+            this.rb.angularVelocity = 0f;
+            this.isRotating = true;
         }
     }
 }

@@ -47,7 +47,7 @@ public class GameController : GameBaseController
 
             this.grid = gridManager.CreateGrid(null, word, gridTexture);
         }
-
+        yield return new WaitForEndOfFrame();
         for (int i = 0; i < this.maxPlayers; i++)
         {
             if(i< this.playerNumber)
@@ -56,7 +56,12 @@ public class GameController : GameBaseController
                 playerController.gameObject.name = "Player_" + i;
                 playerController.UserId = i;
                 this.playerControllers.Add(playerController);
-                this.playerControllers[i].Init(this.characterSets[i], this.defaultAnswerBox);
+
+                var cellPositions = this.gridManager.availablePositions;
+                var cellVector2 = cellPositions[this.gridManager.characterPositionsCellIds[i]];
+                Vector3 actualCellPosition = this.gridManager.cells[cellVector2.x, cellVector2.y].transform.localPosition;
+
+                this.playerControllers[i].Init(this.characterSets[i], this.defaultAnswerBox, actualCellPosition);
 
                 if (i == 0 && LoaderConfig.Instance != null && LoaderConfig.Instance.apiManager.peopleIcon != null)
                 {
@@ -88,7 +93,6 @@ public class GameController : GameBaseController
     {
         base.enterGame();
         StartCoroutine(this.InitialQuestion());
-        SortOrderController.Instance?.startMovingObjects();
     }
 
     public override void endGame()
@@ -131,12 +135,16 @@ public class GameController : GameBaseController
             this.gridManager.UpdateGridWithWord(null, word);
         }
 
+        var cellPositions = this.gridManager.availablePositions;
+
         for (int i = 0; i < this.playerNumber; i++)
         {
             if (this.playerControllers[i] != null)
             {
+                var cellVector2 = cellPositions[this.gridManager.characterPositionsCellIds[i]];
+                Vector3 actualCellPosition = this.gridManager.cells[cellVector2.x, cellVector2.y].transform.localPosition;
                 this.playerControllers[i].resetRetryTime();
-                this.playerControllers[i].playerReset();
+                this.playerControllers[i].playerReset(actualCellPosition);
             }
         }
     }
@@ -147,7 +155,7 @@ public class GameController : GameBaseController
     {
         if(!this.playing) return;
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.F3))
         {
             this.UpdateNextQuestion();
         }
@@ -157,7 +165,7 @@ public class GameController : GameBaseController
              this.gridManager.setAllCellsStatus(this.showCells);
         }
 
-        if (this.playerControllers.Count == 0) return;
+        /*if (this.playerControllers.Count == 0) return;
 
         for (int j = 0; j < SortOrderController.Instance.roads.Length; j++)
         {
@@ -232,15 +240,17 @@ public class GameController : GameBaseController
                 this.UpdateNextQuestion();
             }
         }
-
+        */
 
     } 
 }
 
 
-public enum StayTrail
+public enum CharacterStatus
 {
-    startPoints,
-    trails,
-    submitPoint
+    idling,
+    rotating,
+    moving,
+    getWord,
+    recover
 }

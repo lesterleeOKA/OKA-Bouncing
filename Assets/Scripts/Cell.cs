@@ -1,6 +1,5 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using DG.Tweening;
 
 public class Cell : MonoBehaviour
@@ -14,6 +13,7 @@ public class Cell : MonoBehaviour
     public int row;
     public int col;
     public bool isSelected = false;
+    public int cellId = -1;
 
     public void SetTextContent(string letter="", Color _color = default, Sprite gridSprite = null)
     {
@@ -46,14 +46,6 @@ public class Cell : MonoBehaviour
         this.transform.DOScale(show ? 1f : 0f, duration).SetEase(Ease.InOutSine);
         this.isSelected = show ? true : false;
     }
-
-   /* public void SetButtonColor(Color _color = default)
-    {
-        if (_color != default(Color))
-            this.cellImage.color = _color;
-        else
-            this.cellImage.color = Color.white;
-    }*/
 
     public void SetTextColor(Color _color = default)
     {

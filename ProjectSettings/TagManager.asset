@@ -3,7 +3,36 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - GamePreview
+  - Instruction
+  - GameBackground
+  - MoveItem
+  - Word
+  - StartPoints
+  - Trails
+  - P2_Blood
+  - SubmitPoint
+  - P1_Blood
+  - P1-controller
+  - P1_Icon
+  - P1_Score
+  - P2_Icon
+  - P2_Score
+  - P1_ResultScore
+  - P2_ResultScore
+  - P2-controller
+  - P3-controller
+  - P4-controller
+  - Wall
+  - P3_Blood
+  - P4_Blood
+  - P3_Icon
+  - P4_Icon
+  - P3_Score
+  - P4_Score
+  - P3_ResultScore
+  - P4_ResultScore
   layers:
   - Default
   - TransparentFX
