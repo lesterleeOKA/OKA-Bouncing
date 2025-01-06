@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using System;
@@ -75,6 +75,7 @@ public class GridManager
         get
         {
             var id = this.GenerateUniqueRandomIntegers(1, 0, this.cells.Length, this.showCellIdList, this.characterPositionsCellIds)[0];
+            Debug.Log("new Position id" + id);
             var newCellVector = this.availablePositions[id];
             return this.cells[newCellVector.x, newCellVector.y].transform.localPosition;
         }
@@ -125,7 +126,10 @@ public class GridManager
     {
         foreach (var cell in cells)
         {
-            cell.setCellStatus(status);
+            if (!cell.isSelected)
+            {
+                cell.setCellStatus(status);
+            }
         }
     }
 

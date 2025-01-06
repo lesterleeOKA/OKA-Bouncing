@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class Cell : MonoBehaviour
@@ -66,5 +67,13 @@ public class Cell : MonoBehaviour
         }
     }
 
+    public void setCellEnterColor(bool show = false)
+    {
+        if (this.cellImage != null && show)
+        {
+            this.cellImage.alpha = show ? 1f : 0f;
+            this.cellImage.GetComponent<Image>().color = show ? Color.yellow : Color.white;
+        }
+    }
 
 }

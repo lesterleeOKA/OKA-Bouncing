@@ -252,5 +252,6 @@ public enum CharacterStatus
     rotating,
     moving,
     getWord,
+    hit,
     recover
 }

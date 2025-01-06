@@ -286,16 +286,18 @@ public class PlayerController : UserData
 
     public void StopRotation(BaseEventData data)
     {
-        this.isRotating = false;
-        this.moveDirection = this.rectTransform.up;
-        this.characterStatus = CharacterStatus.moving;
-
+        if(this.characterStatus != CharacterStatus.moving && this.characterStatus != CharacterStatus.hit)
+        {
+            this.isRotating = false;
+            this.moveDirection = this.rectTransform.up;
+            this.characterStatus = CharacterStatus.moving;
+        }
     }
 
     void MoveForward()
     {
-         /*Vector2 targetPosition = rectTransform.anchoredPosition + (moveDirection * moveSpeed * 1000); 
-         rectTransform.DOAnchorPos(targetPosition, 1000f).SetEase(Ease.Linear).SetSpeedBased(true);*/
+        /*Vector2 targetPosition = rectTransform.anchoredPosition + (moveDirection * moveSpeed * 1000); 
+        rectTransform.DOAnchorPos(targetPosition, 1000f).SetEase(Ease.Linear).SetSpeedBased(true);*/
 
         this.rb.velocity = this.moveDirection * moveSpeed;
         this.FaceDirection(this.moveDirection);
@@ -469,6 +471,7 @@ public class PlayerController : UserData
             //Debug.Log("current" + this.rb.velocity.sqrMagnitude);
             //Debug.Log("collision " + collision.rigidbody.velocity.sqrMagnitude);
             collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);
+            collision.gameObject.GetComponent<PlayerController>().characterStatus = CharacterStatus.hit;
             this.rb.velocity = Vector2.zero;
             this.rb.angularVelocity = 0f;
             this.isRotating = true;
