@@ -1,5 +1,7 @@
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using DG.Tweening;
 
 public class CharacterMoveController : MonoBehaviour
 {
@@ -27,5 +29,14 @@ public class CharacterMoveController : MonoBehaviour
         //Debug.Log("Pointer Clicked!");
         // Invoke the event to call the function from Player class
         OnPointerClickEvent?.Invoke(data);
+    }
+
+    public void TriggerActive(bool active)
+    {
+        if(this.eventTrigger != null)
+        {
+            this.eventTrigger.GetComponent<Image>().DOFade(active? 1f : 0f, 0f);
+            this.eventTrigger.enabled = active;
+        }
     }
 }

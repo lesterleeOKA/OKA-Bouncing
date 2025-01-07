@@ -23,44 +23,54 @@ public class GameController : GameBaseController
     protected override void Start()
     {
         base.Start();
+        this.CreateGrids();
+    }
+
+    void CreateGrids()
+    {
+        Sprite gridTexture = LoaderConfig.Instance.gameSetup.gridTexture != null ?
+                            SetUI.ConvertTextureToSprite(LoaderConfig.Instance.gameSetup.gridTexture as Texture2D) : null;
+
+        this.grid = gridManager.CreateGrid(gridTexture);
     }
 
     private IEnumerator InitialQuestion()
     {
-        QuestionController.Instance?.nextQuestion();
+        var questionController = QuestionController.Instance;
+        if(questionController == null) yield break;
+        questionController.nextQuestion();
+
         yield return new WaitForEndOfFrame();
 
-        if (QuestionController.Instance.currentQuestion.answersChoics != null &&
-            QuestionController.Instance.currentQuestion.answersChoics.Length > 0)
+        if (questionController.currentQuestion.answersChoics != null &&
+            questionController.currentQuestion.answersChoics.Length > 0)
         {
-            string[] answers = QuestionController.Instance.currentQuestion.answersChoics;
-            Sprite gridTexture = LoaderConfig.Instance.gameSetup.gridTexture != null ?
-                             SetUI.ConvertTextureToSprite(LoaderConfig.Instance.gameSetup.gridTexture as        Texture2D) : null;
-
-            this.grid = gridManager.CreateGrid(answers, null, gridTexture);
+            string[] answers = questionController.currentQuestion.answersChoics;
+            this.gridManager.UpdateGridWithWord(answers, null);
         }
         else
         {
-            string word = QuestionController.Instance.currentQuestion.correctAnswer;
-            Sprite gridTexture = LoaderConfig.Instance.gameSetup.gridTexture != null ?
-                              SetUI.ConvertTextureToSprite(LoaderConfig.Instance.gameSetup.gridTexture as Texture2D) : null;
-
-            this.grid = gridManager.CreateGrid(null, word, gridTexture);
+            string word = questionController.currentQuestion.correctAnswer;
+            this.gridManager.UpdateGridWithWord(null, word);
         }
-        yield return new WaitForEndOfFrame();
+        this.createPlayer();
+    }
+
+    void createPlayer()
+    {
+        var cellPositions = this.gridManager.availablePositions;
+        var characterPositionList = this.gridManager.CharacterPositionsCellIds;
+
         for (int i = 0; i < this.maxPlayers; i++)
         {
-            if(i< this.playerNumber)
+            if (i < this.playerNumber)
             {
                 var playerController = GameObject.Instantiate(this.playerPrefab, this.parent).GetComponent<PlayerController>();
                 playerController.gameObject.name = "Player_" + i;
                 playerController.UserId = i;
                 this.playerControllers.Add(playerController);
-
-                var cellPositions = this.gridManager.availablePositions;
-                var cellVector2 = cellPositions[this.gridManager.characterPositionsCellIds[i]];
+                var cellVector2 = cellPositions[characterPositionList[i]];
                 Vector3 actualCellPosition = this.gridManager.cells[cellVector2.x, cellVector2.y].transform.localPosition;
-
                 this.playerControllers[i].Init(this.characterSets[i], this.defaultAnswerBox, actualCellPosition);
 
                 if (i == 0 && LoaderConfig.Instance != null && LoaderConfig.Instance.apiManager.peopleIcon != null)
@@ -82,10 +92,9 @@ public class GameController : GameBaseController
                 if (notUsedPlayerIcon != null) notUsedPlayerIcon.SetActive(false);
 
                 var notUsedPlayerController = GameObject.FindGameObjectWithTag("P" + notUsedId + "-controller");
-                if(notUsedPlayerController != null) notUsedPlayerController.SetActive(false);
+                if (notUsedPlayerController != null) notUsedPlayerController.SetActive(false);
             }
         }
-        
     }
 
 
@@ -135,34 +144,43 @@ public class GameController : GameBaseController
             this.gridManager.UpdateGridWithWord(null, word);
         }
 
+        this.playersResetPosition();
+    }
+
+    void playersResetPosition()
+    {
         var cellPositions = this.gridManager.availablePositions;
+        var characterPositionList = this.gridManager.CharacterPositionsCellIds;
 
         for (int i = 0; i < this.playerNumber; i++)
         {
             if (this.playerControllers[i] != null)
             {
-                var cellVector2 = cellPositions[this.gridManager.characterPositionsCellIds[i]];
+                var cellVector2 = cellPositions[characterPositionList[i]];
                 Vector3 actualCellPosition = this.gridManager.cells[cellVector2.x, cellVector2.y].transform.localPosition;
                 this.playerControllers[i].resetRetryTime();
                 this.playerControllers[i].playerReset(actualCellPosition);
             }
         }
     }
-
    
     
     private void Update()
     {
         if(!this.playing) return;
 
-        if (Input.GetKeyDown(KeyCode.F3))
-        {
-            this.UpdateNextQuestion();
-        }
-        else if(Input.GetKeyDown(KeyCode.F1))
+        if(Input.GetKeyDown(KeyCode.F1))
         {
             this.showCells = !this.showCells;
              this.gridManager.setAllCellsStatus(this.showCells);
+        }
+        else if (Input.GetKeyDown(KeyCode.F2))
+        {
+            this.playersResetPosition();
+        }
+        if (Input.GetKeyDown(KeyCode.F3))
+        {
+            this.UpdateNextQuestion();
         }
 
         /*if (this.playerControllers.Count == 0) return;
@@ -252,6 +270,5 @@ public enum CharacterStatus
     rotating,
     moving,
     getWord,
-    hit,
     recover
 }

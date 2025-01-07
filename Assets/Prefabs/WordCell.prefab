@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2794233519007004920}
   - component: {fileID: 6456539187867037797}
   - component: {fileID: 9045958327927874906}
-  - component: {fileID: 8551515074574798589}
+  - component: {fileID: 8643735033543390019}
   - component: {fileID: 4551904555221406810}
   - component: {fileID: 3288388897647592397}
   - component: {fileID: 2879348916738247934}
@@ -41,7 +41,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 300, y: 0}
+  m_SizeDelta: {x: 190, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2794233519007004920
 CanvasRenderer:
@@ -107,9 +107,10 @@ MonoBehaviour:
   row: 0
   col: 0
   isSelected: 0
+  isPlayerStayed: 0
   cellId: -1
---- !u!61 &8551515074574798589
-BoxCollider2D:
+--- !u!58 &8643735033543390019
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -141,18 +142,8 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 125, y: 135}
-  m_EdgeRadius: 0
+  m_Radius: 70
 --- !u!50 &4551904555221406810
 Rigidbody2D:
   serializedVersion: 4
@@ -302,7 +293,7 @@ MonoBehaviour:
   m_fontSizeBase: 100
   m_fontWeight: 400
   m_enableAutoSizing: 1
-  m_fontSizeMin: 20
+  m_fontSizeMin: 18
   m_fontSizeMax: 100
   m_fontStyle: 0
   m_HorizontalAlignment: 2

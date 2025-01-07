@@ -167,8 +167,8 @@ RectTransform:
   m_GameObject: {fileID: 6606873324357462162}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 4228142121456401462}
   m_Father: {fileID: 0}
@@ -220,7 +220,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 55
+  m_Radius: 85
 --- !u!114 &4682495749311219421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -300,11 +300,10 @@ MonoBehaviour:
   retry: 0
   numberOfRetry: 3
   moveButton: {fileID: 0}
-  bloodController: {fileID: 0}
   characterStatus: 0
   scoring:
     usingDeductLogic: 0
-    bonnus: 4
+    bonnus: 1
     correct: 0
     scoreTxt: {fileID: 0}
     scoringTxt: {fileID: 0}

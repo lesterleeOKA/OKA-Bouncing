@@ -21,6 +21,7 @@ public class GameBaseController : MonoBehaviour
     {
         if (LoaderConfig.Instance != null) this.playerNumber = LoaderConfig.Instance.PlayerNumbers;
         SetUI.Set(this.TopUILayer, false, 0f);
+        SetUI.Set(this.GameUILayer, false, 0f);
         SetUI.Set(this.getScorePopup, false, 0f);
         SetUI.Set(this.TopRightUILayer, true, 0f);
         if (this.getScorePopup != null) this.originalGetScorePos = this.getScorePopup.transform.localPosition;

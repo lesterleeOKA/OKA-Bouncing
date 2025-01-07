@@ -10,7 +10,7 @@ using UnityEngine.UI;
 public class PlayerController : UserData
 {
     public CharacterMoveController moveButton;
-    public BloodController bloodController;
+    //public BloodController bloodController;
     public CharacterStatus characterStatus = CharacterStatus.idling;
     public Scoring scoring;
     public string answer = string.Empty;
@@ -42,6 +42,7 @@ public class PlayerController : UserData
 
     public void Init(CharacterSet characterSet = null, Sprite[] defaultAnswerBoxes = null, Vector3 startPos = default)
     {
+        this.transform.DOScale(1f, 1f);
         this.rb = GetComponent<Rigidbody2D>();
         this.SetRandomRotationDirection();
 
@@ -66,11 +67,11 @@ public class PlayerController : UserData
             this.moveButton.OnPointerClickEvent += this.StopRotation;
         }
 
-        if (this.bloodController == null)
+        /*if (this.bloodController == null)
         {
             this.bloodController = GameObject.FindGameObjectWithTag("P" + this.RealUserId + "_Blood").GetComponent<BloodController>();
         }
-
+        */
         if (this.PlayerIcons[0] == null)
         {
             this.PlayerIcons[0] = GameObject.FindGameObjectWithTag("P" + this.RealUserId + "_Icon").GetComponent<PlayerIcon>();
@@ -98,10 +99,10 @@ public class PlayerController : UserData
                 this.Retry--;
             }
 
-            if (this.bloodController != null)
+            /*if (this.bloodController != null)
             {
                 this.bloodController.setBloods(false);
-            }
+            }*/
         }
         else
         {
@@ -134,15 +135,36 @@ public class PlayerController : UserData
 
     public void checkAnswer(int currentTime, Action onCompleted = null)
     {
+        var currentQuestion = QuestionController.Instance?.currentQuestion;
+        if(currentQuestion.answersChoics == null || currentQuestion.answersChoics.Length == 0) return;
+
+        var getChoice = this.answerBox.text;
+        var lowerQIDAns = currentQuestion.correctAnswer.ToLower();
+        switch (getChoice)
+        {
+            case "A":
+                this.answer = currentQuestion.answersChoics[0].ToLower();
+                break;
+            case "B":
+                this.answer = currentQuestion.answersChoics[1].ToLower();
+                break;
+            case "C":
+                this.answer = currentQuestion.answersChoics[2].ToLower();
+                break;
+            case "D":
+                this.answer = currentQuestion.answersChoics[3].ToLower();
+                break;
+        }
+        //Debug.Log("FKKKKKKKKKKKKKKKKKKKKKKKK"+ getChoice + " , " + this.answer);
+        if(this.answer != lowerQIDAns) return;
+
         if (!this.IsCheckedAnswer)
         {
             this.IsCheckedAnswer = true;
             var loader = LoaderConfig.Instance;
-            var currentQuestion = QuestionController.Instance?.currentQuestion;
             int eachQAScore = currentQuestion.qa.score.full == 0 ? 10 : currentQuestion.qa.score.full;
             int currentScore = this.Score;
-            this.answer = this.answerBox.text.ToLower();
-            var lowerQIDAns = currentQuestion.correctAnswer.ToLower();
+
             int resultScore = this.scoring.score(this.answer, currentScore, lowerQIDAns, eachQAScore);
             this.Score = resultScore;
             this.IsCorrect = this.scoring.correct;
@@ -211,7 +233,7 @@ public class PlayerController : UserData
     public void resetRetryTime()
     {
         this.updateRetryTimes(false);
-        this.bloodController.setBloods(true);
+       // this.bloodController.setBloods(true);
         this.IsTriggerToNextQuestion = false;
     }
 
@@ -244,7 +266,7 @@ public class PlayerController : UserData
         onCompleted?.Invoke();
     }
 
-    public void characterReset(Vector3 newStartPostion = default)
+    public void characterReset(Vector3 newStartPostion)
     {
         this.randomDirection = UnityEngine.Random.Range(0, 2) == 0 ? 1f : -1f;
         this.startPosition = newStartPostion;
@@ -264,11 +286,6 @@ public class PlayerController : UserData
             this.isRotating = false; 
             this.moveDirection = this.rectTransform.up;
         }
-        else if (Input.GetKeyDown(KeyCode.F2))
-        {
-            var gridManager = GameController.Instance.gridManager;
-            this.playerReset(gridManager.newCharacterPosition);
-        }
 
         if (!this.isRotating)
         {
@@ -286,9 +303,10 @@ public class PlayerController : UserData
 
     public void StopRotation(BaseEventData data)
     {
-        if(this.characterStatus != CharacterStatus.moving && this.characterStatus != CharacterStatus.hit)
+        if(this.characterStatus != CharacterStatus.moving)
         {
             this.isRotating = false;
+            this.moveButton.TriggerActive(false);
             this.moveDirection = this.rectTransform.up;
             this.characterStatus = CharacterStatus.moving;
         }
@@ -298,7 +316,6 @@ public class PlayerController : UserData
     {
         /*Vector2 targetPosition = rectTransform.anchoredPosition + (moveDirection * moveSpeed * 1000); 
         rectTransform.DOAnchorPos(targetPosition, 1000f).SetEase(Ease.Linear).SetSpeedBased(true);*/
-
         this.rb.velocity = this.moveDirection * moveSpeed;
         this.FaceDirection(this.moveDirection);
     }
@@ -311,11 +328,10 @@ public class PlayerController : UserData
         transform.rotation = Quaternion.Euler(0, 0, angle - 90); // Subtract 90 to align "up" with the forward direction
     }
 
-    public void playerReset(Vector3 newStartPostion = default)
+    public void playerReset(Vector3 newStartPostion)
     {
-        this.rb.velocity = Vector2.zero;
-        this.rb.angularVelocity = 0f;
-        this.isRotating = true;
+        this.transform.DOScale(1f, 1f);
+        this.StopCharacter();
         this.deductAnswer();
         this.setAnswer("");
         this.characterReset(newStartPostion);
@@ -332,7 +348,8 @@ public class PlayerController : UserData
         }
         else
         {
-            if(content.Length > 1) { 
+            var gridManager = GameController.Instance.gridManager;
+            if (gridManager.isMCType) { 
                 this.answer = content;
             }
             else
@@ -406,9 +423,10 @@ public class PlayerController : UserData
             var cell = other.GetComponent<Cell>();
             if (cell != null)
             {
+                cell.setCellEnterColor(true);
                 if (cell.isSelected && this.Retry > 0)
                 {
-                    LogController.Instance.debug("Player has entered the trigger!" + other.name);
+                    //LogController.Instance.debug("Player has entered the trigger!" + other.name);
                     AudioController.Instance?.PlayAudio(9);
 
                     var gridManager = GameController.Instance.gridManager;
@@ -422,11 +440,12 @@ public class PlayerController : UserData
                     }
                     this.characterStatus = CharacterStatus.getWord;
                     this.setAnswer(cell.content.text);
+                    var gameTimer = GameController.Instance.gameTimer;
+                    int currentTime = Mathf.FloorToInt(((gameTimer.gameDuration - gameTimer.currentTime) / gameTimer.gameDuration) * 100);
+                    this.checkAnswer(currentTime);
                     this.collectedCell.Add(cell);
                     cell.SetTextStatus(false);
-                    this.rb.velocity = Vector2.zero;
-                    this.rb.angularVelocity = 0f;
-                    this.isRotating = true;
+                    this.StopCharacter();
                 }
             }
         }
@@ -438,6 +457,14 @@ public class PlayerController : UserData
         }
     }
 
+    void StopCharacter()
+    {
+        this.rb.velocity = Vector2.zero;
+        this.rb.angularVelocity = 0f;
+        this.isRotating = true;
+        this.moveButton.TriggerActive(true);
+    }
+
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Word"))
@@ -445,6 +472,7 @@ public class PlayerController : UserData
             var cell = other.GetComponent<Cell>();
             if (cell != null)
             {
+                cell.setCellEnterColor(false);
                 if (cell.isSelected)
                 {
                     LogController.Instance.debug("Player has exited the trigger!" + other.name);
@@ -458,6 +486,7 @@ public class PlayerController : UserData
         if (this.characterStatus != CharacterStatus.recover)
         {
             this.characterStatus = CharacterStatus.recover;
+            this.transform.DOScale(0f, 1f);
             yield return new WaitForSeconds(2.0f);
             var gridManager = GameController.Instance.gridManager;
             this.playerReset(gridManager.newCharacterPosition);
@@ -470,11 +499,19 @@ public class PlayerController : UserData
         {
             //Debug.Log("current" + this.rb.velocity.sqrMagnitude);
             //Debug.Log("collision " + collision.rigidbody.velocity.sqrMagnitude);
-            collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);
-            collision.gameObject.GetComponent<PlayerController>().characterStatus = CharacterStatus.hit;
-            this.rb.velocity = Vector2.zero;
-            this.rb.angularVelocity = 0f;
-            this.isRotating = true;
+            if (this.gameObject.name != collision.gameObject.name)
+            {
+                collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);
+                collision.gameObject.GetComponent<PlayerController>().moveButton.TriggerActive(false);
+                collision.collider.enabled = false;
+                //Debug.Log(collision.gameObject.name);
+            }
+            this.StopCharacter();
         }
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        collision.collider.enabled = true;
     }
 }
