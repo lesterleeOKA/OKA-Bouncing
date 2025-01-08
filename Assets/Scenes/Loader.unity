@@ -408,7 +408,7 @@ MonoBehaviour:
     allTextures: []
     useGCCollect: 1
     bgTexture: {fileID: 2800000, guid: 4fe359ee66b7f3c47ba3b91af272fc60, type: 3}
-    previewTexture: {fileID: 2800000, guid: 4eee706e07b87b14aaa6b6ff6442e8e9, type: 3}
+    previewTexture: {fileID: 2800000, guid: 00791a6a7b2a0dd45aa3905cd693220c, type: 3}
     frameTexture_p1: {fileID: 0}
     frameTexture_p2: {fileID: 0}
     gridTexture: {fileID: 0}
@@ -420,7 +420,7 @@ MonoBehaviour:
     retry_times: 3
     objectAverageSpeed: 2
     showFPS: 0
-    playerNumber: 4
+    playerNumber: 2
   apiManager:
     jwt: 
     appId: 
