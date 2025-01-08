@@ -420,7 +420,7 @@ MonoBehaviour:
     retry_times: 3
     objectAverageSpeed: 2
     showFPS: 0
-    playerNumber: 2
+    playerNumber: 4
   apiManager:
     jwt: 
     appId: 
