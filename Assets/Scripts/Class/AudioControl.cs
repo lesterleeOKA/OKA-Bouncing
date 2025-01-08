@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class AudioControl : MonoBehaviour
 {   
     public AudioOnOff audioOnOffPanel;
-    public Image muteBtn;
+    public Image[] muteBtns;
     public Sprite[] audioSprites;
     private AudioListener audioListener;
     // Start is called before the first frame update
@@ -15,8 +15,11 @@ public class AudioControl : MonoBehaviour
 
         if(AudioController.Instance != null)
         {
-            if (this.muteBtn != null && this.audioSprites[AudioController.Instance.audioStatus ? 0 : 1] != null)
-                this.muteBtn.sprite = this.audioSprites[AudioController.Instance.audioStatus ? 0 : 1];
+            foreach(var muteBtn in muteBtns)
+            {
+                if (muteBtn != null && this.audioSprites[AudioController.Instance.audioStatus ? 0 : 1] != null)
+                    muteBtn.sprite = this.audioSprites[AudioController.Instance.audioStatus ? 0 : 1];
+            }
         }
     }
 
@@ -24,8 +27,12 @@ public class AudioControl : MonoBehaviour
     {
         this.setMutePanel(false);
         if (this.audioOnOffPanel != null) this.audioOnOffPanel.set(status);
-        if (this.muteBtn != null && this.audioSprites[status ? 0:1] != null)
-            this.muteBtn.sprite = this.audioSprites[status ? 0 : 1];
+
+        foreach (var muteBtn in muteBtns)
+        {
+            if (muteBtn != null && this.audioSprites[status ? 0:1] != null)
+                muteBtn.sprite = this.audioSprites[status ? 0 : 1];
+        }
     }
 
     public void setMutePanel(bool status)
