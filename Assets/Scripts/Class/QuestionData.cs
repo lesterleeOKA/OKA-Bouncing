@@ -159,11 +159,11 @@ public class CurrentQuestion
                     var width = this.questionImage.GetComponent<RectTransform>().sizeDelta.x;
                     if (qaImage.width > qaImage.height)
                     {
-                        this.questionImage.GetComponent<RectTransform>().sizeDelta = new Vector2(width, 275f);
+                        this.questionImage.GetComponent<RectTransform>().sizeDelta = new Vector2(width, 235f);
                     }
                     else
                     {
-                        this.questionImage.GetComponent<RectTransform>().sizeDelta = new Vector2(width, 430f);
+                        this.questionImage.GetComponent<RectTransform>().sizeDelta = new Vector2(width, 310f);
                     }
                     this.aspecRatioFitter.aspectRatio = (float)qaImage.width / (float)qaImage.height;
                 }
@@ -224,12 +224,23 @@ public class CurrentQuestion
             this.numberQuestion = 0;
     }
 
+    public AudioClip currentAudioClip
+    {
+        get{
+            return this.qa.audioClip;
+        }
+    }
+
     public void playAudio()
     {
-        if(this.audioPlayBtn != null && this.qa.audioClip != null &&  AudioController.Instance.audioStatus)
+        if(this.audioPlayBtn != null && this.currentAudioClip != null &&  AudioController.Instance.audioStatus)
         {
-            this.audioPlayBtn.GetComponentInChildren<AudioSource>().clip = this.qa.audioClip;
-            this.audioPlayBtn.GetComponentInChildren<AudioSource>().Play();
+            var audio = this.audioPlayBtn.GetComponentInChildren<AudioSource>();
+            if (audio != null)
+            {
+                audio.clip = this.currentAudioClip;
+                audio.Play();
+            }
         }
     }
 }

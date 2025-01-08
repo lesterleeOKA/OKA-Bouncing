@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 public class GameController : GameBaseController
 {
     public static GameController Instance = null;
@@ -13,6 +14,8 @@ public class GameController : GameBaseController
     public Sprite[] defaultAnswerBox;
     public List<PlayerController> playerControllers = new List<PlayerController>();
     private bool showCells = false;
+    public CanvasGroup[] audioTypeButtons, fillInBlankTypeButtons;
+    public TextMeshProUGUI choiceText;
 
     protected override void Awake()
     {
@@ -38,6 +41,7 @@ public class GameController : GameBaseController
         var questionController = QuestionController.Instance;
         if(questionController == null) yield break;
         questionController.nextQuestion();
+        this.controlDuplicateUIButtons(questionController);
 
         yield return new WaitForEndOfFrame();
 
@@ -125,6 +129,42 @@ public class GameController : GameBaseController
         base.endGame();
     }
 
+    void controlDuplicateUIButtons(QuestionController questionController = null)
+    {
+        var currentQuestion = questionController.currentQuestion;
+        switch (currentQuestion.questiontype)
+        {
+            case QuestionType.Audio:
+                SetUI.SetWholeGroupTo(this.audioTypeButtons, true);
+                break;
+            case QuestionType.FillInBlank:
+                SetUI.SetWholeGroupTo(this.fillInBlankTypeButtons, true);
+                break;
+            case QuestionType.None:
+            case QuestionType.Picture:
+            case QuestionType.Text:
+                SetUI.SetWholeGroupTo(this.audioTypeButtons, false);
+                SetUI.SetWholeGroupTo(this.fillInBlankTypeButtons, false);
+                break;
+            default:
+                SetUI.SetWholeGroupTo(this.audioTypeButtons, false);
+                SetUI.SetWholeGroupTo(this.fillInBlankTypeButtons, false);
+                break;
+        }
+
+        if (this.choiceText != null)
+        {
+            string formattedText = ""; // Initialize a string to hold the formatted answers
+
+            for (int i = 0; i < currentQuestion.answersChoics.Length; i++)
+            {
+                char label = (char)('A' + i); // Convert index to corresponding letter
+                formattedText += label + ": " + currentQuestion.answersChoics[i] + "\n"; // Append each formatted answer
+            }
+            this.choiceText.text = formattedText; // Set the combined text to the txt
+        }
+    }
+
     public void UpdateNextQuestion()
     {
         LogController.Instance?.debug("Next Question");
@@ -132,6 +172,9 @@ public class GameController : GameBaseController
 
         if (questionController != null) {
             questionController.nextQuestion();
+
+            this.controlDuplicateUIButtons(questionController);
+
             if (questionController.currentQuestion.answersChoics != null &&
                 questionController.currentQuestion.answersChoics.Length > 0)
             {

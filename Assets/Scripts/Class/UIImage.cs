@@ -61,6 +61,19 @@ public static class SetUI
         }
     }
 
+    public static void SetWholeGroupTo(CanvasGroup[] _cgs = null, bool _status=false, float _duration = 0f)
+    {
+        for (int i = 0; i < _cgs.Length; i++)
+        {
+            if (_cgs[i] != null)
+            {
+                _cgs[i].DOFade(_status ? 1f : 0f, _duration);
+                _cgs[i].interactable = _status;
+                _cgs[i].blocksRaycasts = _status;
+            }
+        }
+    }
+
     public static void SetGroup(CanvasGroup[] _cgs = null, int _showId=-1, float _duration = 0f)
     {
         for (int i = 0; i < _cgs.Length; i++) {

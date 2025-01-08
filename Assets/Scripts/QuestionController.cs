@@ -54,4 +54,13 @@ public class QuestionController : MonoBehaviour
     {
         this.currentQuestion.playAudio();
     }
+
+    public void PlayCurrentQuestionAudio(AudioSource audio)
+    {
+        if(audio != null)
+        {
+            audio.clip = this.currentQuestion.currentAudioClip;
+            audio.Play();
+        }
+    }
 }
