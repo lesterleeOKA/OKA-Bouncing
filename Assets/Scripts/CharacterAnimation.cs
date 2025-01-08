@@ -7,13 +7,13 @@ public class CharacterAnimation : MonoBehaviour
     public CharacterSet characterSet;
     public float frameRate = 10f; // Frame rate for the animation
     public ParticleSystem runEffect;
-    private RawImage characterImage;
+    public RawImage characterImage;
     public int currentFrame = 0;
     private Coroutine walkingCoroutine;
 
     void Start()
     {
-        this.characterImage = GetComponent<RawImage>();
+        if(this.characterImage == null) this.characterImage = GetComponent<RawImage>();
         this.setIdling();
     }
 

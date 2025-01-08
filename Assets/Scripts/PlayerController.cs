@@ -82,6 +82,11 @@ public class PlayerController : UserData
             this.scoring.scoreTxt = GameObject.FindGameObjectWithTag("P" + this.RealUserId + "_Score").GetComponent<TextMeshProUGUI>();
         }
 
+        if (this.scoring.answeredEffectTxt == null)
+        {
+            this.scoring.answeredEffectTxt = GameObject.FindGameObjectWithTag("P" + this.RealUserId + "_AnswerScore").GetComponent<TextMeshProUGUI>();
+        }
+
         if (this.scoring.resultScoreTxt == null)
         {
             this.scoring.resultScoreTxt = GameObject.FindGameObjectWithTag("P" + this.RealUserId + "_ResultScore").GetComponent<TextMeshProUGUI>();
@@ -232,6 +237,7 @@ public class PlayerController : UserData
 
     public void resetRetryTime()
     {
+        this.scoring.resetText();
         this.updateRetryTimes(false);
        // this.bloodController.setBloods(true);
         this.IsTriggerToNextQuestion = false;
@@ -314,8 +320,6 @@ public class PlayerController : UserData
 
     void MoveForward()
     {
-        /*Vector2 targetPosition = rectTransform.anchoredPosition + (moveDirection * moveSpeed * 1000); 
-        rectTransform.DOAnchorPos(targetPosition, 1000f).SetEase(Ease.Linear).SetSpeedBased(true);*/
         this.rb.velocity = this.moveDirection * moveSpeed;
         this.FaceDirection(this.moveDirection);
     }

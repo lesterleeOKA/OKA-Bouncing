@@ -30,7 +30,6 @@ public class GameController : GameBaseController
     {
         Sprite gridTexture = LoaderConfig.Instance.gameSetup.gridTexture != null ?
                             SetUI.ConvertTextureToSprite(LoaderConfig.Instance.gameSetup.gridTexture as Texture2D) : null;
-
         this.grid = gridManager.CreateGrid(gridTexture);
     }
 
@@ -123,28 +122,30 @@ public class GameController : GameBaseController
             }
         }
         this.endGamePage.setStatus(true, showSuccess);
-
         base.endGame();
     }
 
     public void UpdateNextQuestion()
     {
         LogController.Instance?.debug("Next Question");
-        QuestionController.Instance?.nextQuestion();
+        var questionController = QuestionController.Instance;
 
-        if (QuestionController.Instance.currentQuestion.answersChoics != null &&
-            QuestionController.Instance.currentQuestion.answersChoics.Length > 0)
-        {
-            string[] answers = QuestionController.Instance.currentQuestion.answersChoics;
-            this.gridManager.UpdateGridWithWord(answers, null);
-        }
-        else
-        {
-            string word = QuestionController.Instance.currentQuestion.correctAnswer;
-            this.gridManager.UpdateGridWithWord(null, word);
-        }
+        if (questionController != null) {
+            questionController.nextQuestion();
+            if (questionController.currentQuestion.answersChoics != null &&
+                questionController.currentQuestion.answersChoics.Length > 0)
+            {
+                string[] answers = questionController.currentQuestion.answersChoics;
+                this.gridManager.UpdateGridWithWord(answers, null);
+            }
+            else
+            {
+                string word = questionController.currentQuestion.correctAnswer;
+                this.gridManager.UpdateGridWithWord(null, word);
+            }
 
-        this.playersResetPosition();
+            this.playersResetPosition();
+        }       
     }
 
     void playersResetPosition()

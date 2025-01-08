@@ -24,8 +24,6 @@ public class Cell : MonoBehaviour
         if (this.cellImage == null) 
             this.cellImage = this.GetComponent<CanvasGroup>();
 
-        //this.SetButtonColor(_color);
-        //this.cellImage.sprite = this.cellSprites[0];
         this.transform.DOScale(1f, 0f);
         if (this.content != null) {
             this.content.text = letter;

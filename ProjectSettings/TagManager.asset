@@ -33,6 +33,10 @@ TagManager:
   - P4_Score
   - P3_ResultScore
   - P4_ResultScore
+  - P1_AnswerScore
+  - P2_AnswerScore
+  - P3_AnswerScore
+  - P4_AnswerScore
   layers:
   - Default
   - TransparentFX
