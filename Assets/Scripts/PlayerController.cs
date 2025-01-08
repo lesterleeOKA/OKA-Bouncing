@@ -155,8 +155,8 @@ public class PlayerController : UserData
                 this.answer = currentQuestion.answersChoics[3].ToLower();
                 break;
         }
-        //Debug.Log("FKKKKKKKKKKKKKKKKKKKKKKKK"+ getChoice + " , " + this.answer);
-        if(this.answer != lowerQIDAns) return;
+        if(this.answer != lowerQIDAns) 
+            return;
 
         if (!this.IsCheckedAnswer)
         {

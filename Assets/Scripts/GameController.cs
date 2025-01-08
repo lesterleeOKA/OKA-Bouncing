@@ -159,6 +159,7 @@ public class GameController : GameBaseController
                 var cellVector2 = cellPositions[characterPositionList[i]];
                 Vector3 actualCellPosition = this.gridManager.cells[cellVector2.x, cellVector2.y].transform.localPosition;
                 this.playerControllers[i].resetRetryTime();
+                this.playerControllers[i].collectedCell.Clear();
                 this.playerControllers[i].playerReset(actualCellPosition);
             }
         }

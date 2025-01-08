@@ -26,8 +26,8 @@ public class Cell : MonoBehaviour
 
         //this.SetButtonColor(_color);
         //this.cellImage.sprite = this.cellSprites[0];
+        this.transform.DOScale(1f, 0f);
         if (this.content != null) {
-            this.SetTextStatus(true);
             this.content.text = letter;
             this.content.color = this.defaultColor;
             System.Random random = new System.Random(); 
@@ -49,6 +49,7 @@ public class Cell : MonoBehaviour
     public void SetTextStatus(bool show, float duration=0.5f)
     {
         this.isSelected = show ? true : false;
+        this.transform.DOScale(show ? 1f : 0f, 0.5f);
     }
 
     public void SetTextColor(Color _color = default)
