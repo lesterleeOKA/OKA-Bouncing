@@ -92,10 +92,23 @@ public class GameController : GameBaseController
             {
                 int notUsedId = i + 1;
                 var notUsedPlayerIcon = GameObject.FindGameObjectWithTag("P" + notUsedId + "_Icon");
-                if (notUsedPlayerIcon != null) notUsedPlayerIcon.SetActive(false);
+                if (notUsedPlayerIcon != null) { 
+                    var notUsedIcon = notUsedPlayerIcon.GetComponent<PlayerIcon>();
+
+                    if(notUsedIcon != null)
+                    {
+                        notUsedIcon.HiddenIcon();
+                    }
+                    //notUsedPlayerIcon.SetActive(false);
+                }
 
                 var notUsedPlayerController = GameObject.FindGameObjectWithTag("P" + notUsedId + "-controller");
-                if (notUsedPlayerController != null) notUsedPlayerController.SetActive(false);
+                if (notUsedPlayerController != null)
+                {
+                    var notUsedMoveController = notUsedPlayerController.GetComponent<CharacterMoveController>();
+                    notUsedMoveController.TriggerActive(false);
+                }
+                   // notUsedPlayerController.SetActive(false);
             }
         }
     }

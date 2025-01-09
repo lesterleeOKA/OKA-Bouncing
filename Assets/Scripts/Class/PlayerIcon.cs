@@ -32,6 +32,17 @@ public class PlayerIcon : MonoBehaviour
         set { this.playerNos = value; }
     }
 
+    public void HiddenIcon()
+    {
+        for (int i = 0; i < this.PlayerIcons.Length; i++)
+        {
+            if (this.PlayerIcons[i] != null)
+            {
+                this.PlayerIcons[i].sprite = null;
+            }
+        }
+    }
+
     public void SetStatus(bool _status = false, string _playerName = "", Sprite _icon = null)
     {
         this.gameObject.SetActive(_status);

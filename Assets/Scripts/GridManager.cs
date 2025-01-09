@@ -2,7 +2,6 @@
 using System.Linq;
 using UnityEngine;
 using System;
-using System.Collections;
 
 [Serializable]
 public class GridManager
@@ -105,14 +104,15 @@ public class GridManager
             bool isValid = true;
 
             // To avoid foreach, use HashSet.Contains for direct neighbor checks
-            if (uniqueIntegers.Contains(randomNumber - 1) || uniqueIntegers.Contains(randomNumber + 1) ||
-                uniqueIntegers.Contains(randomNumber - this.gridColumn) || uniqueIntegers.Contains(randomNumber + this.gridColumn))
+            if (uniqueIntegers.Contains(randomNumber - 1) || uniqueIntegers.Contains(randomNumber + 1) || 
+                uniqueIntegers.Contains(randomNumber - this.gridColumn) || uniqueIntegers.Contains(randomNumber + this.gridColumn) || 
+                uniqueIntegers.Contains(randomNumber - this.gridColumn - 1) || uniqueIntegers.Contains(randomNumber - this.gridColumn + 1) || 
+                uniqueIntegers.Contains(randomNumber + this.gridColumn - 1) || uniqueIntegers.Contains(randomNumber + this.gridColumn + 1))
             {
                 isValid = false;
             }
-
-            // If valid, add to the set
-            if (isValid)
+                // If valid, add to the set
+                if (isValid)
             {
                 uniqueIntegers.Add(randomNumber);
             }
