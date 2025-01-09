@@ -32,7 +32,7 @@ public class PlayerController : UserData
     public float countGetAnswerAtStartPoints = 2f;
     private float countAtStartPoints = 0f;
 
-    private RectTransform rectTransform = null;
+    public RectTransform rectTransform = null;
     public float rotationSpeed = 200f; // Speed of rotation
     public float moveSpeed = 5f; // Speed of movement
     private Rigidbody2D rb = null;
@@ -57,6 +57,18 @@ public class PlayerController : UserData
         this.characterAnimation.characterSet = characterSet;
 
         if(this.answerBoxCg != null ) {
+
+            if(this.UserId < 2)
+            {
+                this.answerBoxCg.transform.localPosition = new Vector2(70f, -70f);
+                this.answerBoxCg.transform.localScale = Vector3.one;
+            }
+            else
+            {
+                this.answerBoxCg.transform.localPosition = new Vector2(-70f, 70f);
+                this.answerBoxCg.transform.localScale = new Vector3(-1f, -1f, 1f);
+            }
+
             SetUI.Set(this.answerBoxCg, false);
             this.answerBox = this.answerBoxCg.GetComponentInChildren<TextMeshProUGUI>();
         }
@@ -285,7 +297,7 @@ public class PlayerController : UserData
     {
         if (this.isRotating && this.rectTransform != null) { 
             this.characterStatus = CharacterStatus.rotating;
-            Vector3 direction = Vector3.forward * rotationSpeed * Time.deltaTime * randomDirection;
+            Vector3 direction = Vector3.forward * rotationSpeed * Time.deltaTime * this.randomDirection;
             this.rectTransform.Rotate(direction); 
         }
         if (Input.GetKeyDown(KeyCode.Space) && this.UserId == 0) { 
@@ -301,7 +313,7 @@ public class PlayerController : UserData
 
     void SetRandomRotationDirection()
     {
-        this.rectTransform = this.GetComponent<RectTransform>();
+        if(this.rectTransform == null) this.rectTransform = this.GetComponent<RectTransform>();
         this.rb = GetComponent<Rigidbody2D>();
         this.rb.gravityScale = 0;
         this.randomDirection =  UnityEngine.Random.Range(0, 2) == 0 ? 1f : -1f;
@@ -321,7 +333,8 @@ public class PlayerController : UserData
     void MoveForward()
     {
         this.rb.velocity = this.moveDirection * moveSpeed;
-        this.FaceDirection(this.moveDirection);
+        this.rb.angularVelocity = 0f;
+        //this.FaceDirection(this.moveDirection);
     }
 
     private void FaceDirection(Vector2 direction)
@@ -506,6 +519,7 @@ public class PlayerController : UserData
             if (this.gameObject.name != collision.gameObject.name)
             {
                 collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);
+                collision.rigidbody.angularVelocity = 0f;
                 collision.gameObject.GetComponent<PlayerController>().moveButton.TriggerActive(false);
                 collision.collider.enabled = false;
                 //Debug.Log(collision.gameObject.name);
