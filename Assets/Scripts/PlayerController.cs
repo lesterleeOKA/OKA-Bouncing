@@ -60,12 +60,12 @@ public class PlayerController : UserData
 
             if(this.UserId < 2)
             {
-                this.answerBoxCg.transform.localPosition = new Vector2(70f, -70f);
+                this.answerBoxCg.transform.localPosition = new Vector2(55f, -80f);
                 this.answerBoxCg.transform.localScale = Vector3.one;
             }
             else
             {
-                this.answerBoxCg.transform.localPosition = new Vector2(-70f, 70f);
+                this.answerBoxCg.transform.localPosition = new Vector2(-55f, 80f);
                 this.answerBoxCg.transform.localScale = new Vector3(-1f, -1f, 1f);
             }
 
