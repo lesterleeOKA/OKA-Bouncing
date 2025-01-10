@@ -305,7 +305,7 @@ RectTransform:
   m_GameObject: {fileID: 6592110113215887553}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
+  m_LocalScale: {x: 0.65, y: 0.65, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5863413813655435262}
@@ -313,10 +313,10 @@ RectTransform:
   - {fileID: 8360333367960045626}
   m_Father: {fileID: 6393496943356075750}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 170, y: 242}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 12.5}
+  m_SizeDelta: {x: 320, y: 392}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3479291929700819819
 CanvasRenderer:
@@ -438,9 +438,9 @@ CircleCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
+  m_Offset: {x: 0, y: 12.5}
   serializedVersion: 2
-  m_Radius: 105
+  m_Radius: 85
 --- !u!114 &4682495749311219421
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -494,7 +494,7 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
-  m_Constraints: 0
+  m_Constraints: 4
 --- !u!114 &-7946665715853582427
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -602,10 +602,13 @@ MonoBehaviour:
   characterSet:
     name: 
     playerNumber: 0
+    playerColor: {r: 0, g: 0, b: 0, a: 0}
+    boardTexture: {fileID: 0}
     idlingTexture: {fileID: 0}
     walkingAnimationTextures: []
   frameRate: 10
   runEffect: {fileID: 0}
+  boardImage: {fileID: 1015463725482117503}
   characterImage: {fileID: 3806514332911915416}
   currentFrame: 0
 --- !u!1 &6912397416022014885
@@ -718,7 +721,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 55, y: -80}
+  m_AnchoredPosition: {x: 60, y: -60}
   m_SizeDelta: {x: 84.5369, y: 54.0273}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5960340716931837156

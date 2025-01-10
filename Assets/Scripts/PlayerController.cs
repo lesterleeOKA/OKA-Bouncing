@@ -60,12 +60,12 @@ public class PlayerController : UserData
 
             if(this.UserId < 2)
             {
-                this.answerBoxCg.transform.localPosition = new Vector2(55f, -80f);
+                this.answerBoxCg.transform.localPosition = new Vector2(60f, -60f);
                 this.answerBoxCg.transform.localScale = Vector3.one;
             }
             else
             {
-                this.answerBoxCg.transform.localPosition = new Vector2(-55f, 80f);
+                this.answerBoxCg.transform.localPosition = new Vector2(-60f, 60f);
                 this.answerBoxCg.transform.localScale = new Vector3(-1f, -1f, 1f);
             }
 
@@ -128,14 +128,14 @@ public class PlayerController : UserData
         }
     }
 
-    public void updatePlayerIcon(bool _status = false, string _playerName = "", Sprite _icon = null, Color32 _color = default)
+    public void updatePlayerIcon(bool _status = false, string _playerName = "", Sprite _icon = null)
     {
         for (int i = 0; i < this.PlayerIcons.Length; i++)
         {
             if (this.PlayerIcons[i] != null)
             {
-                this.PlayerColor = _color;
-                this.PlayerIcons[i].playerColor = _color;
+                this.PlayerColor = this.characterAnimation.characterSet.playerColor;
+                this.PlayerIcons[i].playerColor = this.characterAnimation.characterSet.playerColor;
                 //this.joystick.handle.GetComponent<Image>().color = _color;
                 this.PlayerIcons[i].SetStatus(_status, _playerName, _icon);
             }
@@ -337,13 +337,13 @@ public class PlayerController : UserData
         //this.FaceDirection(this.moveDirection);
     }
 
-    private void FaceDirection(Vector2 direction)
+    /*private void FaceDirection(Vector2 direction)
     {
         // Make sure the character visually faces the direction of movement
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
         this.rb.angularVelocity = 0f;
         transform.rotation = Quaternion.Euler(0, 0, angle - 90); // Subtract 90 to align "up" with the forward direction
-    }
+    }*/
 
     public void playerReset(Vector3 newStartPostion)
     {
@@ -514,8 +514,6 @@ public class PlayerController : UserData
     {
         if(this.characterStatus == CharacterStatus.moving)
         {
-            //Debug.Log("current" + this.rb.velocity.sqrMagnitude);
-            //Debug.Log("collision " + collision.rigidbody.velocity.sqrMagnitude);
             if (this.gameObject.name != collision.gameObject.name)
             {
                 collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);

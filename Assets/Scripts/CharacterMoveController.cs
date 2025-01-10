@@ -8,11 +8,34 @@ public class CharacterMoveController : MonoBehaviour
     public EventTrigger eventTrigger;
     public delegate void PointerClickDelegate(BaseEventData data);
     public event PointerClickDelegate OnPointerClickEvent;
+    public bool startReset = false;
+    public float idleTimeReset = 10f;
+    public float idleCount = 0f;
 
     void Start()
     {
         // Add a pointer click event
         AddEventTrigger(eventTrigger, EventTriggerType.PointerClick, OnPointerClick);
+    }
+
+    private void Update()
+    {
+        if(this.startReset)
+        {
+            if(this.idleCount > 0f)
+            {
+                this.idleCount -= Time.deltaTime;
+            }
+            else
+            {
+                this.TriggerActive(true);
+                this.resetIdle();
+            }
+        }
+        else
+        {
+            this.resetIdle();
+        }
     }
 
     // Function to add an event trigger
@@ -37,6 +60,12 @@ public class CharacterMoveController : MonoBehaviour
         {
             this.eventTrigger.GetComponent<Image>().DOFade(active? 1f : 0f, 0f);
             this.eventTrigger.enabled = active;
+            this.startReset = !active;
         }
+    }
+
+    void resetIdle()
+    {
+        this.idleCount = this.idleTimeReset;
     }
 }
