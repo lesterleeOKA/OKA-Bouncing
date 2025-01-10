@@ -178,6 +178,18 @@ public class GameController : GameBaseController
         }
     }
 
+    public void PrepareNextQuestion()
+    {
+        LogController.Instance?.debug("Prepare Next Question");
+        for (int i = 0; i < this.playerNumber; i++)
+        {
+            if (this.playerControllers[i] != null)
+            {
+                this.playerControllers[i].characterStatus = CharacterStatus.idling;
+            }
+        }
+    }
+
     public void UpdateNextQuestion()
     {
         LogController.Instance?.debug("Next Question");

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -408,7 +408,7 @@ MonoBehaviour:
     allTextures: []
     useGCCollect: 1
     bgTexture: {fileID: 2800000, guid: 90ab1338a7be9254d95f754f43fb40b0, type: 3}
-    previewTexture: {fileID: 2800000, guid: 00791a6a7b2a0dd45aa3905cd693220c, type: 3}
+    previewTexture: {fileID: 2800000, guid: 9e69d64ad5b7634419c61278b3aea3e3, type: 3}
     frameTexture_p1: {fileID: 0}
     frameTexture_p2: {fileID: 0}
     gridTexture: {fileID: 0}

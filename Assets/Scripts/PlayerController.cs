@@ -36,7 +36,7 @@ public class PlayerController : UserData
     public float rotationSpeed = 200f; // Speed of rotation
     public float moveSpeed = 5f; // Speed of movement
     private Rigidbody2D rb = null;
-    public bool isRotating = true;
+   // public bool isRotating = true;
     private float randomDirection;
     private Vector2 moveDirection;
 
@@ -105,6 +105,7 @@ public class PlayerController : UserData
         }
 
         this.scoring.init();
+        this.characterStatus = CharacterStatus.rotating;
     }
 
     void updateRetryTimes(bool deduct = false)
@@ -260,6 +261,7 @@ public class PlayerController : UserData
         float delay = 2f;
         if (correct)
         {
+            GameController.Instance?.PrepareNextQuestion();
             LogController.Instance?.debug("Add marks" + this.Score);
             GameController.Instance?.setGetScorePopup(true);
             AudioController.Instance?.PlayAudio(1);
@@ -295,19 +297,30 @@ public class PlayerController : UserData
 
     void FixedUpdate()
     {
-        if (this.isRotating && this.rectTransform != null) { 
-            this.characterStatus = CharacterStatus.rotating;
-            Vector3 direction = Vector3.forward * rotationSpeed * Time.deltaTime * this.randomDirection;
-            this.rectTransform.Rotate(direction); 
-        }
-        if (Input.GetKeyDown(KeyCode.Space) && this.UserId == 0) { 
-            this.isRotating = false; 
-            this.moveDirection = this.rectTransform.up;
-        }
-
-        if (!this.isRotating)
+        if(this.rectTransform != null)
         {
-            this.MoveForward();
+            switch (this.characterStatus)
+            {
+                case CharacterStatus.idling:
+                    this.moveButton.TriggerActive(false);
+                    return;
+                case CharacterStatus.rotating:
+                    Vector3 direction = Vector3.forward * rotationSpeed * Time.deltaTime * this.randomDirection;
+                    this.rectTransform.Rotate(direction);
+                    break;
+                case CharacterStatus.moving:
+                    this.MoveForward();
+                    break;
+            }
+
+            if (Input.GetKeyDown(KeyCode.Space) && this.UserId == 0)
+            {
+                this.characterStatus = CharacterStatus.moving;
+                this.moveDirection = this.rectTransform.up;
+            }
+
+            bool isMoving = this.rb.velocity.sqrMagnitude > 0.05f;
+            this.moveButton.TriggerActive(isMoving ? false : true);
         }
     }
 
@@ -321,10 +334,8 @@ public class PlayerController : UserData
 
     public void StopRotation(BaseEventData data)
     {
-        if(this.characterStatus != CharacterStatus.moving)
+        if(this.characterStatus == CharacterStatus.rotating)
         {
-            this.isRotating = false;
-            this.moveButton.TriggerActive(false);
             this.moveDirection = this.rectTransform.up;
             this.characterStatus = CharacterStatus.moving;
         }
@@ -348,12 +359,13 @@ public class PlayerController : UserData
     public void playerReset(Vector3 newStartPostion)
     {
         this.transform.DOScale(1f, 1f);
-        this.StopCharacter();
         this.deductAnswer();
         this.setAnswer("");
         this.characterReset(newStartPostion);
         this.IsCheckedAnswer = false;
         this.IsCorrect = false;
+        this.StopCharacter();
+        this.characterStatus = CharacterStatus.rotating;
     }
 
     public void setAnswer(string content)
@@ -457,12 +469,12 @@ public class PlayerController : UserData
                     }
                     this.characterStatus = CharacterStatus.getWord;
                     this.setAnswer(cell.content.text);
-                    var gameTimer = GameController.Instance.gameTimer;
-                    int currentTime = Mathf.FloorToInt(((gameTimer.gameDuration - gameTimer.currentTime) / gameTimer.gameDuration) * 100);
-                    this.checkAnswer(currentTime);
                     this.collectedCell.Add(cell);
                     cell.SetTextStatus(false);
                     this.StopCharacter();
+                    var gameTimer = GameController.Instance.gameTimer;
+                    int currentTime = Mathf.FloorToInt(((gameTimer.gameDuration - gameTimer.currentTime) / gameTimer.gameDuration) * 100);
+                    this.checkAnswer(currentTime);
                 }
             }
         }
@@ -478,8 +490,7 @@ public class PlayerController : UserData
     {
         this.rb.velocity = Vector2.zero;
         this.rb.angularVelocity = 0f;
-        this.isRotating = true;
-        this.moveButton.TriggerActive(true);
+        this.characterStatus = CharacterStatus.rotating;
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -518,7 +529,6 @@ public class PlayerController : UserData
             {
                 collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);
                 collision.rigidbody.angularVelocity = 0f;
-                collision.gameObject.GetComponent<PlayerController>().moveButton.TriggerActive(false);
                 collision.collider.enabled = false;
                 //Debug.Log(collision.gameObject.name);
             }

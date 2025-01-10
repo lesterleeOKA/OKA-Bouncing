@@ -58,7 +58,7 @@ public class CharacterMoveController : MonoBehaviour
     {
         if(this.eventTrigger != null)
         {
-            this.eventTrigger.GetComponent<Image>().DOFade(active? 1f : 0f, 0f);
+            this.eventTrigger.GetComponent<Image>().DOColor(active? Color.white : Color.gray, 0f);
             this.eventTrigger.enabled = active;
             this.startReset = !active;
         }
