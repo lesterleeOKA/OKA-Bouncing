@@ -302,6 +302,8 @@ public class PlayerController : UserData
             switch (this.characterStatus)
             {
                 case CharacterStatus.idling:
+                    this.rb.velocity = Vector2.zero;
+                    this.rb.angularVelocity = 0f;
                     this.StopResetCoroutine();
                     this.moveButton.TriggerActive(false);
                     return;
