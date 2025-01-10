@@ -302,6 +302,7 @@ public class PlayerController : UserData
             switch (this.characterStatus)
             {
                 case CharacterStatus.idling:
+                    this.StopResetCoroutine();
                     this.moveButton.TriggerActive(false);
                     return;
                 case CharacterStatus.rotating:
@@ -482,7 +483,7 @@ public class PlayerController : UserData
         {
             AudioController.Instance?.PlayAudio(8);
             this.deductAnswer();
-            StartCoroutine(this.delayResetCharacter());
+            this.resetCoroutine = StartCoroutine(this.delayResetCharacter());
         }
     }
 
@@ -509,6 +510,17 @@ public class PlayerController : UserData
         }
     }
 
+    private Coroutine resetCoroutine = null;
+
+    public void StopResetCoroutine()
+    {
+        if (this.resetCoroutine != null)
+        {
+            StopCoroutine(this.resetCoroutine);
+            this.resetCoroutine = null;
+        }
+    }
+
     IEnumerator delayResetCharacter()
     {
         if (this.characterStatus != CharacterStatus.recover)
@@ -529,15 +541,15 @@ public class PlayerController : UserData
             {
                 collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);
                 collision.rigidbody.angularVelocity = 0f;
-                collision.collider.enabled = false;
+                //collision.collider.enabled = false;
                 //Debug.Log(collision.gameObject.name);
             }
             this.StopCharacter();
         }
     }
 
-    private void OnCollisionExit2D(Collision2D collision)
+    /*private void OnCollisionExit2D(Collision2D collision)
     {
         collision.collider.enabled = true;
-    }
+    }*/
 }
