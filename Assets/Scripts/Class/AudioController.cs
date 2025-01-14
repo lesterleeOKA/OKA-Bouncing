@@ -21,7 +21,7 @@ public class AudioController : MonoBehaviour
         this.audioSource = GetComponent<AudioSource>();
     }
 
-    public void PlayAudio(int index, bool loop=false)
+    public void PlayAudio(int index, bool loop=false, float volume = 1f)
     {
         if(!this.audioStatus)
             return;
@@ -33,6 +33,7 @@ public class AudioController : MonoBehaviour
         }
 
         this.audioSource.clip = audioClips[index];
+        this.audioSource.volume = volume;
         this.audioSource.Play();
         this.audioSource.loop = loop;
     }

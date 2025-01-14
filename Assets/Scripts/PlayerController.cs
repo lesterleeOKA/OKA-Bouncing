@@ -285,7 +285,6 @@ public class PlayerController : UserData
         float delay = 2f;
         if (correct)
         {
-            yield return new WaitForSeconds(0.5f);
             GameController.Instance?.PrepareNextQuestion();
             LogController.Instance?.debug("Add marks" + this.Score);
             GameController.Instance?.setGetScorePopup(true);
@@ -523,7 +522,7 @@ public class PlayerController : UserData
         else if (other.CompareTag("Wall"))
         {
             SetUI.SetScale(this.answerBoxCg, false);
-            AudioController.Instance?.PlayAudio(8);
+            AudioController.Instance?.PlayAudio(11, false, 0.5f);
             this.deductAnswer();
             this.resetCoroutine = StartCoroutine(this.delayResetCharacter());
         }
@@ -597,6 +596,7 @@ public class PlayerController : UserData
                 // Debug log the collision information
                 LogController.Instance.debug($"Collision with: {collision.gameObject.name},distanceFactor: {distanceFactor}, Reduced Factor: {reducedFactor}, Distance: {distance}");
             }
+            AudioController.Instance?.PlayAudio(10); //blob
             this.StopCharacter();
         }
     }
