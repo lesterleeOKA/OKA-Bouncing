@@ -37,12 +37,38 @@ public class PlayerController : UserData
     public float moveSpeed = 5f; // Speed of movement
     private Rigidbody2D rb = null;
    // public bool isRotating = true;
+    public Vector3 playerCurrentPosition = Vector3.zero;
     private float randomDirection;
     private Vector2 moveDirection;
+    public float reduceBaseFactor = 0.93f;
+    private float reducedFactor = 0f;
+    public CanvasGroup bornParticle;
+    public GameObject playerAppearEffect;
+    public GameObject[] answerParticles;
 
     public void Init(CharacterSet characterSet = null, Sprite[] defaultAnswerBoxes = null, Vector3 startPos = default)
     {
-        this.transform.DOScale(1f, 1f);
+        for(int i=0; i < this.answerParticles.Length; i++)
+        {
+            if(this.answerParticles[i] != null)
+            {
+                if(i == this.UserId)
+                {
+                    this.answerParticles[i].SetActive(true);
+                }
+                else
+                {
+                    this.answerParticles[i].SetActive(false);
+                }
+            }
+        }
+        this.GetComponent<CircleCollider2D>().enabled = true;
+        SetUI.Set(this.bornParticle, true, 1f);
+        this.transform.DOScale(1f, 1f).OnComplete(()=>
+        {
+            this.playerAppearEffect.SetActive(false);
+            SetUI.Set(this.bornParticle, false, 1f);
+        });
         this.rb = GetComponent<Rigidbody2D>();
         this.SetRandomRotationDirection();
 
@@ -57,19 +83,16 @@ public class PlayerController : UserData
         this.characterAnimation.characterSet = characterSet;
 
         if(this.answerBoxCg != null ) {
-
-            if(this.UserId < 2)
+            this.answerBoxCg.transform.localScale = Vector3.zero;
+            if (this.UserId < 2)
             {
                 this.answerBoxCg.transform.localPosition = new Vector2(60f, -60f);
-                this.answerBoxCg.transform.localScale = Vector3.one;
             }
             else
             {
                 this.answerBoxCg.transform.localPosition = new Vector2(-60f, 60f);
-                this.answerBoxCg.transform.localScale = new Vector3(-1f, -1f, 1f);
             }
-
-            SetUI.Set(this.answerBoxCg, false);
+            SetUI.SetScale(this.answerBoxCg, false);
             this.answerBox = this.answerBoxCg.GetComponentInChildren<TextMeshProUGUI>();
         }
 
@@ -106,6 +129,7 @@ public class PlayerController : UserData
 
         this.scoring.init();
         this.characterStatus = CharacterStatus.rotating;
+        this.reducedFactor = this.reduceBaseFactor;
     }
 
     void updateRetryTimes(bool deduct = false)
@@ -261,6 +285,7 @@ public class PlayerController : UserData
         float delay = 2f;
         if (correct)
         {
+            yield return new WaitForSeconds(0.5f);
             GameController.Instance?.PrepareNextQuestion();
             LogController.Instance?.debug("Add marks" + this.Score);
             GameController.Instance?.setGetScorePopup(true);
@@ -324,6 +349,16 @@ public class PlayerController : UserData
 
             bool isMoving = this.rb.velocity.sqrMagnitude > 0.05f;
             this.moveButton.TriggerActive(isMoving ? false : true);
+
+            if (isMoving)
+            {
+                this.rb.velocity *= this.reducedFactor;
+            }
+            else
+            {
+                this.reducedFactor = this.reduceBaseFactor;
+                this.rb.velocity = Vector3.zero;
+            }
         }
     }
 
@@ -339,6 +374,8 @@ public class PlayerController : UserData
     {
         if(this.characterStatus == CharacterStatus.rotating)
         {
+            AudioController.Instance?.PlayAudio(0);
+            this.playerCurrentPosition = this.transform.localPosition;
             this.moveDirection = this.rectTransform.up;
             this.characterStatus = CharacterStatus.moving;
         }
@@ -351,17 +388,18 @@ public class PlayerController : UserData
         //this.FaceDirection(this.moveDirection);
     }
 
-    /*private void FaceDirection(Vector2 direction)
-    {
-        // Make sure the character visually faces the direction of movement
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-        this.rb.angularVelocity = 0f;
-        transform.rotation = Quaternion.Euler(0, 0, angle - 90); // Subtract 90 to align "up" with the forward direction
-    }*/
-
     public void playerReset(Vector3 newStartPostion)
     {
-        this.transform.DOScale(1f, 1f);
+        SetUI.Set(this.bornParticle, true, 1f);
+        this.transform.DOScale(0f, 0f);
+        if(this.playerAppearEffect != null) this.playerAppearEffect.SetActive(true);
+        this.GetComponent<CircleCollider2D>().enabled = true;
+
+        this.transform.DOScale(1f, 1f).OnComplete(() =>
+        {
+            this.playerAppearEffect.SetActive(false);
+            SetUI.Set(this.bornParticle, false, 1f);
+        });
         this.deductAnswer();
         this.setAnswer("");
         this.characterReset(newStartPostion);
@@ -376,7 +414,7 @@ public class PlayerController : UserData
         if (string.IsNullOrEmpty(content))
         {
             this.answer = "";
-            SetUI.Set(this.answerBoxCg, false);
+            SetUI.SetScale(this.answerBoxCg, false);
         }
         else
         {
@@ -388,7 +426,8 @@ public class PlayerController : UserData
             {
                 this.answer += content;
             }
-            SetUI.Set(this.answerBoxCg, true);
+            float endValue = this.UserId < 2 ? 1f : -1f;
+            SetUI.SetScale(this.answerBoxCg, true, endValue, 0.5f, Ease.OutElastic);
         }
 
         if(this.answerBox != null)
@@ -434,7 +473,7 @@ public class PlayerController : UserData
 
                 if (this.answer.Length == 0)
                 {
-                    SetUI.Set(this.answerBoxCg, false);
+                    SetUI.SetScale(this.answerBoxCg, false);
                 }
             }
 
@@ -455,7 +494,7 @@ public class PlayerController : UserData
             var cell = other.GetComponent<Cell>();
             if (cell != null)
             {
-                cell.setCellEnterColor(true);
+                cell.setCellEnterColor(true, GameController.Instance.showCells);
                 if (cell.isSelected && this.Retry > 0)
                 {
                     //LogController.Instance.debug("Player has entered the trigger!" + other.name);
@@ -483,6 +522,7 @@ public class PlayerController : UserData
         }
         else if (other.CompareTag("Wall"))
         {
+            SetUI.SetScale(this.answerBoxCg, false);
             AudioController.Instance?.PlayAudio(8);
             this.deductAnswer();
             this.resetCoroutine = StartCoroutine(this.delayResetCharacter());
@@ -529,6 +569,7 @@ public class PlayerController : UserData
         {
             this.characterStatus = CharacterStatus.recover;
             this.transform.DOScale(0f, 1f);
+            this.GetComponent<CircleCollider2D>().enabled = false;
             yield return new WaitForSeconds(2.0f);
             var gridManager = GameController.Instance.gridManager;
             this.playerReset(gridManager.newCharacterPosition);
@@ -537,18 +578,30 @@ public class PlayerController : UserData
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if(this.characterStatus == CharacterStatus.moving)
+        if (this.characterStatus == CharacterStatus.moving)
         {
             if (this.gameObject.name != collision.gameObject.name)
             {
-                collision.rigidbody.velocity += new Vector2(0.05f, 0.05f);
-                collision.rigidbody.angularVelocity = 0f;
-                //collision.collider.enabled = false;
-                //Debug.Log(collision.gameObject.name);
+                Rigidbody2D rb = collision.rigidbody;
+                Vector2 relativeVelocity = collision.relativeVelocity;
+
+                // Calculate the distance between the two objects
+                float distance = Vector2.Distance(this.playerCurrentPosition, collision.transform.localPosition);
+
+                var distanceFactor = distance / 10000f;
+                this.reducedFactor = this.reduceBaseFactor + distanceFactor;
+                // Apply the reduced factor
+                collision.gameObject.GetComponent<PlayerController>().reducedFactor = this.reducedFactor;
+                rb.angularVelocity = 0f;
+
+                // Debug log the collision information
+                LogController.Instance.debug($"Collision with: {collision.gameObject.name},distanceFactor: {distanceFactor}, Reduced Factor: {reducedFactor}, Distance: {distance}");
             }
             this.StopCharacter();
         }
     }
+
+
 
     /*private void OnCollisionExit2D(Collision2D collision)
     {

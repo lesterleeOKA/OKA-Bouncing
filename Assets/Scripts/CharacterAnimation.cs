@@ -52,9 +52,7 @@ public class CharacterAnimation : MonoBehaviour
             }
 
             currentFrame = (currentFrame + 1) % this.characterSet.walkingAnimationTextures.Length;
-            if(this.runEffect != null && !this.runEffect.isPlaying) { 
-                this.runEffect.Play();
-            }
+            this.playParticle();
             yield return new WaitForSeconds(1f / this.frameRate); // Wait for the frame duration
         }
     }
@@ -72,5 +70,13 @@ public class CharacterAnimation : MonoBehaviour
 
         if (this.characterImage != null)
             this.characterImage.texture = this.characterSet.idlingTexture;
+    }
+
+    public void playParticle()
+    {
+        if (this.runEffect != null && !this.runEffect.isPlaying)
+        {
+            this.runEffect.Play();
+        }
     }
 }

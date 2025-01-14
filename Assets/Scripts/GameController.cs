@@ -12,7 +12,7 @@ public class GameController : GameBaseController
     public Transform parent;
     public Sprite[] defaultAnswerBox;
     public List<PlayerController> playerControllers = new List<PlayerController>();
-    private bool showCells = false;
+    public bool showCells = false;
     public CanvasGroup[] audioTypeButtons, fillInBlankTypeButtons;
     public TextMeshProUGUI choiceText;
 
@@ -73,6 +73,7 @@ public class GameController : GameBaseController
                 this.playerControllers.Add(playerController);
                 var cellVector2 = cellPositions[characterPositionList[i]];
                 Vector3 actualCellPosition = this.gridManager.cells[cellVector2.x, cellVector2.y].transform.localPosition;
+                this.gridManager.cells[cellVector2.x, cellVector2.y].setCellEnterColor(true);
                 this.playerControllers[i].Init(this.characterSets[i], this.defaultAnswerBox, actualCellPosition);
 
                 if (i == 0 && LoaderConfig.Instance != null && LoaderConfig.Instance.apiManager.peopleIcon != null)
@@ -227,6 +228,7 @@ public class GameController : GameBaseController
             {
                 var cellVector2 = cellPositions[characterPositionList[i]];
                 Vector3 actualCellPosition = this.gridManager.cells[cellVector2.x, cellVector2.y].transform.localPosition;
+                this.gridManager.cells[cellVector2.x, cellVector2.y].setCellEnterColor(true);
                 this.playerControllers[i].resetRetryTime();
                 this.playerControllers[i].collectedCell.Clear();
                 this.playerControllers[i].playerReset(actualCellPosition);
@@ -242,7 +244,7 @@ public class GameController : GameBaseController
         if(Input.GetKeyDown(KeyCode.F1))
         {
             this.showCells = !this.showCells;
-             this.gridManager.setAllCellsStatus(this.showCells);
+            this.gridManager.setAllCellsStatus(this.showCells);
         }
         else if (Input.GetKeyDown(KeyCode.F2))
         {

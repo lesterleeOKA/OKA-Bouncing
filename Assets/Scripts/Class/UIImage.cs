@@ -109,6 +109,20 @@ public static class SetUI
         }
     }
 
+    public static void SetScale(CanvasGroup _cg = null, bool _status = false, float endValue=1f, float _duration = 0f, Ease easeType= default,  Action _onComplete = null)
+    {
+        if (_cg != null)
+        {
+            _cg.transform.DOScale(0f, 0f);
+            _cg.transform.DOScale(_status ? endValue : 0f, _duration).SetEase(easeType).OnComplete(() => {
+                if (_onComplete != null)
+                    _onComplete.Invoke();
+            });
+            _cg.interactable = _status;
+            _cg.blocksRaycasts = _status;
+        }
+    }
+
     public static Sprite ConvertTextureToSprite(Texture2D texture)
     {
         return Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), new Vector2(0.5f, 0.5f));

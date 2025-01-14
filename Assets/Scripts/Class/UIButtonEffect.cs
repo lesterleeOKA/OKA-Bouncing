@@ -8,13 +8,11 @@ public class UIButtonEffect : MonoBehaviour
 {
     private EventTrigger eventTrigger = null;
     public float scaleRatio = 0.75f;
-    private Button buttonClick = null;
     public bool pointDown = false;
     
     // Start is called before the first frame update
     void Start()
     {
-        this.buttonClick = this.GetComponent<Button>();
         this.eventTrigger = this.GetComponent<EventTrigger>();
         EventTrigger.Entry pointerDownEntry = new EventTrigger.Entry();
         pointerDownEntry.eventID = EventTriggerType.PointerDown;
@@ -29,17 +27,24 @@ public class UIButtonEffect : MonoBehaviour
 
     void scaleSmallBtn(BaseEventData data)
     {
-        if(this.buttonClick.interactable) { 
-            this.transform.DOScale(this.scaleRatio, 0.3f);
-            this.pointDown = true;
-        }
+        if(this.eventTrigger != null)
+        {
+            if (this.eventTrigger.enabled)
+            {
+                this.transform.DOScale(this.scaleRatio, 0.3f);
+                this.pointDown = true;
+            }
+        }    
     }
 
     void scaleToOriginal(BaseEventData data)
     {
-        if(this.buttonClick.interactable) { 
-            this.transform.DOScale(1f, 0.3f);
-            this.pointDown = false;
+        if (this.eventTrigger != null)
+        {
+            if (this.eventTrigger.enabled) { 
+                this.transform.DOScale(1f, 0.3f);
+                this.pointDown = false;
+            }
         }
     }
 }

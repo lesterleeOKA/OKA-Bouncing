@@ -46,6 +46,7 @@ public class Cell : MonoBehaviour
 
     public void SetTextStatus(bool show, float duration=0.5f)
     {
+        if(show) this.setCellStatus(true);
         this.isSelected = show ? true : false;
         this.transform.DOScale(show ? 1f : 0f, 0.5f);
     }
@@ -69,11 +70,11 @@ public class Cell : MonoBehaviour
         }
     }
 
-    public void setCellEnterColor(bool show = false)
+    public void setCellEnterColor(bool stay=false, bool show = false)
     {
         if (this.cellImage != null)
         {
-            this.isPlayerStayed = show;
+            this.isPlayerStayed = stay;
             this.cellImage.GetComponent<Image>().color = show ? Color.yellow : Color.white;
         }
     }
