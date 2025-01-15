@@ -409,14 +409,13 @@ MonoBehaviour:
     useGCCollect: 1
     bgTexture: {fileID: 2800000, guid: 90ab1338a7be9254d95f754f43fb40b0, type: 3}
     previewTexture: {fileID: 2800000, guid: 9e69d64ad5b7634419c61278b3aea3e3, type: 3}
-    frameTexture_p1: {fileID: 0}
-    frameTexture_p2: {fileID: 0}
     gridTexture: {fileID: 0}
     gameBackground: {fileID: 0}
     gamePreview: {fileID: 0}
     instructions: {fileID: 0}
     gameTime: 0
-    playersMovingSpeed: 3
+    playersMovingSpeed: 5
+    playersRotationSpeed: 200
     retry_times: 3
     objectAverageSpeed: 2
     showFPS: 0
@@ -448,8 +447,6 @@ MonoBehaviour:
       instructionContent: 
       gameTime: 0
       playerNumber: 0
-      frameImageUrl_P1: 
-      frameImageUrl_P2: 
       grid_image: 
     maxRetries: 10
     debugLayer: {fileID: 1630735626}

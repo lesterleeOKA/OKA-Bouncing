@@ -30,15 +30,19 @@ public class LoaderConfig : GameSetting
 
     public void LoadGameData()
     {
-        /*RegisterCustomHandler("wordFormat", (value) =>
+        RegisterCustomHandler("mSpeed", (value) =>
         {
-            int wordFormat = int.Parse(value);
-            if (Enum.IsDefined(typeof(GridWordFormat), wordFormat))
-            {
-                this.gameSetup.gridWordFormat = (GridWordFormat)wordFormat;
-                LogController.Instance?.debug("GridWordFormat: " + this.gameSetup.gridWordFormat);
-            }
-        });*/
+            float playerMovingSpeed = float.Parse(value);
+            this.gameSetup.playersMovingSpeed = playerMovingSpeed;
+            LogController.Instance?.debug("Player moving speed: " + this.gameSetup.playersMovingSpeed);
+        });
+
+        RegisterCustomHandler("rSpeed", (value) =>
+        {
+            float playerRotationSpeed = float.Parse(value);
+            this.gameSetup.playersRotationSpeed = playerRotationSpeed;
+            LogController.Instance?.debug("Player rotation speed: " + this.gameSetup.playersRotationSpeed);
+        });
 
         this.apiManager.PostGameSetting(this.GetParseURLParams,
                                         () => StartCoroutine(this.apiManager.postGameSetting(this.LoadQuestions)),

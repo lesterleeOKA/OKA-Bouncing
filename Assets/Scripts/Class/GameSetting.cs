@@ -140,8 +140,6 @@ public class GameSetting : MonoBehaviour
         {
             this.apiManager.settings.backgroundImageUrl,
             this.apiManager.settings.previewGameImageUrl,
-            this.apiManager.settings.frameImageUrl_P1,
-            this.apiManager.settings.frameImageUrl_P2,
             this.apiManager.settings.grid_image
         };
         imageUrls = imageUrls.Where(url => !string.IsNullOrEmpty(url)).ToList();
@@ -178,14 +176,6 @@ public class GameSetting : MonoBehaviour
             else if (url == this.apiManager.settings.previewGameImageUrl)
             {
                 this.gameSetup.previewTexture = texture != null ? texture : null;
-            }
-            else if (url == this.apiManager.settings.frameImageUrl_P1)
-            {
-                this.gameSetup.frameTexture_p1 = texture != null ? texture : null;
-            }
-            else if (url == this.apiManager.settings.frameImageUrl_P2)
-            {
-                this.gameSetup.frameTexture_p2 = texture != null ? texture : null;
             }
             else if (url == this.apiManager.settings.grid_image)
             {
@@ -225,6 +215,7 @@ public class GameSetting : MonoBehaviour
         set { this.gameSetup.playerNumber = value; }
     }
 
+
     public string CurrentHostName
     {
         get
@@ -256,10 +247,6 @@ public class GameSetup : LoadImage
     public Texture bgTexture;
     [Tooltip("Default Game Preview Texture")]
     public Texture previewTexture;
-    [Tooltip("Default P1 Frame Texture")]
-    public Texture frameTexture_p1;
-    [Tooltip("Default P2 Frame Texture")]
-    public Texture frameTexture_p2;
     [Tooltip("Default grid Texture")]
     public Texture gridTexture;
     [Tooltip("Find Tag name of GameBackground in different scene")]
@@ -269,6 +256,7 @@ public class GameSetup : LoadImage
     public InstructionText instructions;
     public float gameTime;
     public float playersMovingSpeed = 3f;
+    public float playersRotationSpeed = 200f;
     public int retry_times = 3;
     [Range(1, 3)]
     public int objectAverageSpeed;

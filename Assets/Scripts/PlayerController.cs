@@ -48,7 +48,17 @@ public class PlayerController : UserData
 
     public void Init(CharacterSet characterSet = null, Sprite[] defaultAnswerBoxes = null, Vector3 startPos = default)
     {
-        for(int i=0; i < this.answerParticles.Length; i++)
+        if(LoaderConfig.Instance.gameSetup.playersMovingSpeed > 0f)
+        {
+            this.moveSpeed = LoaderConfig.Instance.gameSetup.playersMovingSpeed;
+        }
+
+        if(LoaderConfig.Instance.gameSetup.playersRotationSpeed > 0f)
+        {
+            this.rotationSpeed = LoaderConfig.Instance.gameSetup.playersRotationSpeed;
+        }
+
+        for (int i=0; i < this.answerParticles.Length; i++)
         {
             if(this.answerParticles[i] != null)
             {
@@ -382,7 +392,7 @@ public class PlayerController : UserData
 
     void MoveForward()
     {
-        this.rb.velocity = this.moveDirection * moveSpeed;
+        this.rb.velocity = this.moveDirection * this.moveSpeed;
         this.rb.angularVelocity = 0f;
         //this.FaceDirection(this.moveDirection);
     }

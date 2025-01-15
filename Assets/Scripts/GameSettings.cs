@@ -5,8 +5,8 @@ using System;
 public class GameSettings : Settings
 {
     public int playerNumber = 0;
-    public string frameImageUrl_P1;
-    public string frameImageUrl_P2;
+    //public string frameImageUrl_P1;
+    //public string frameImageUrl_P2;
     public string grid_image;
     //public string normal_color;
     //public string pressed_color;
@@ -19,11 +19,11 @@ public static class SetParams
         if (settings != null && jsonNode != null)
         {
             ////////Game Customization params/////////
-            string frameImageUrl_P1 = jsonNode["setting"]["frame_p1"] != null ?
+            /*string frameImageUrl_P1 = jsonNode["setting"]["frame_p1"] != null ?
                 jsonNode["setting"]["frame_p1"].ToString().Replace("\"", "") : null;
 
             string frameImageUrl_P2 = jsonNode["setting"]["frame_p2"] != null ?
-                jsonNode["setting"]["frame_p2"].ToString().Replace("\"", "") : null;
+                jsonNode["setting"]["frame_p2"].ToString().Replace("\"", "") : null;*/
 
             string grid_image = jsonNode["setting"]["grid_image"] != null ?
                 jsonNode["setting"]["grid_image"].ToString().Replace("\"", "") : null;
@@ -42,7 +42,7 @@ public static class SetParams
 
             LoaderConfig.Instance.gameSetup.gridPressedColor = ColorUtility.TryParseHtmlString(settings.pressed_color, out Color pressedColor) ? pressedColor : Color.clear;*/
 
-            if (frameImageUrl_P1 != null)
+            /*if (frameImageUrl_P1 != null)
             {
                 if (!frameImageUrl_P1.StartsWith("https://") || !frameImageUrl_P1.StartsWith(APIConstant.blobServerRelativePath))
                     settings.frameImageUrl_P1 = APIConstant.blobServerRelativePath + frameImageUrl_P1;
@@ -52,7 +52,7 @@ public static class SetParams
             {
                 if (!frameImageUrl_P2.StartsWith("https://") || !frameImageUrl_P2.StartsWith(APIConstant.blobServerRelativePath))
                     settings.frameImageUrl_P2 = APIConstant.blobServerRelativePath + frameImageUrl_P2;
-            }
+            }*/
 
             if (grid_image != null)
             {
