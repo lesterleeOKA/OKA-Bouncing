@@ -111,8 +111,8 @@ public class GridManager
             {
                 isValid = false;
             }
-                // If valid, add to the set
-                if (isValid)
+            // If valid, add to the set
+            if (isValid)
             {
                 uniqueIntegers.Add(randomNumber);
             }
