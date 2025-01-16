@@ -8,6 +8,6 @@ public class CharacterSet
     public int playerNumber;
     public Color playerColor;
     public Texture boardTexture;
-    public Texture idlingTexture;
+    public Texture defaultIcon, idlingTexture;
     public Texture[] walkingAnimationTextures;
 }

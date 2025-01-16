@@ -85,7 +85,7 @@ public class GameController : GameBaseController
                 }
                 else
                 {
-                    var icon = SetUI.ConvertTextureToSprite(this.characterSets[i].idlingTexture as Texture2D);
+                    var icon = SetUI.ConvertTextureToSprite(this.characterSets[i].defaultIcon as Texture2D);
                     this.playerControllers[i].updatePlayerIcon(true, null, icon);
                 }
             }

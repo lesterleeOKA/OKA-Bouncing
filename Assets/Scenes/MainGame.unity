@@ -24742,24 +24742,28 @@ MonoBehaviour:
     playerNumber: 0
     playerColor: {r: 0.16078432, g: 0.6666667, b: 0.882353, a: 1}
     boardTexture: {fileID: 2800000, guid: 1bae07932b97a9f478f5bce4448e2fd8, type: 3}
+    defaultIcon: {fileID: 2800000, guid: bc25a2dfb6637e4448e34453ed635ac0, type: 3}
     idlingTexture: {fileID: 2800000, guid: bc25a2dfb6637e4448e34453ed635ac0, type: 3}
     walkingAnimationTextures: []
   - name: p2
     playerNumber: 1
     playerColor: {r: 0.90196085, g: 0.53333336, b: 0.1137255, a: 1}
     boardTexture: {fileID: 2800000, guid: f06cc9846054369439fe372ede41883e, type: 3}
+    defaultIcon: {fileID: 2800000, guid: 73493533e08d9fd41850cf8781f88fde, type: 3}
     idlingTexture: {fileID: 2800000, guid: 73493533e08d9fd41850cf8781f88fde, type: 3}
     walkingAnimationTextures: []
   - name: p3
     playerNumber: 2
     playerColor: {r: 0.21176472, g: 0.6666667, b: 0.2784314, a: 1}
     boardTexture: {fileID: 2800000, guid: 3fa61923546110e4687fc540dfd47edf, type: 3}
+    defaultIcon: {fileID: 2800000, guid: 34e6998bc06546248a0999b9a1478d0f, type: 3}
     idlingTexture: {fileID: 2800000, guid: 34e6998bc06546248a0999b9a1478d0f, type: 3}
     walkingAnimationTextures: []
   - name: p4
     playerNumber: 3
     playerColor: {r: 0.7411765, g: 0, b: 0.5254902, a: 1}
     boardTexture: {fileID: 2800000, guid: d1efc4bb68f860b47a4d3b4d7cb697a9, type: 3}
+    defaultIcon: {fileID: 2800000, guid: f796608769a88954b96a9ff7d048f10c, type: 3}
     idlingTexture: {fileID: 2800000, guid: f796608769a88954b96a9ff7d048f10c, type: 3}
     walkingAnimationTextures: []
   gridManager:
