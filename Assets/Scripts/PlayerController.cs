@@ -74,8 +74,10 @@ public class PlayerController : UserData
         }
         this.GetComponent<CircleCollider2D>().enabled = true;
         SetUI.Set(this.bornParticle, true, 1f);
+        this.characterStatus = CharacterStatus.born;
         this.transform.DOScale(1f, 1f).OnComplete(()=>
         {
+            this.characterStatus = CharacterStatus.idling;
             this.playerAppearEffect.SetActive(false);
             SetUI.Set(this.bornParticle, false, 1f);
         });
@@ -336,10 +338,9 @@ public class PlayerController : UserData
         {
             switch (this.characterStatus)
             {
+                case CharacterStatus.born:
                 case CharacterStatus.idling:
-                    this.rb.velocity = Vector2.zero;
-                    this.rb.angularVelocity = 0f;
-                    this.StopResetCoroutine();
+                    this.StopCharacter();
                     return;
                 case CharacterStatus.rotating:
                     this.moveButton.TriggerActive(true);
@@ -348,6 +349,9 @@ public class PlayerController : UserData
                     break;
                 case CharacterStatus.moving:
                     this.MoveForward();
+                    break;
+                case CharacterStatus.nextQA:
+                    this.HoldCharacter();
                     break;
                 case CharacterStatus.recover:
                     this.moveButton.TriggerActive(false);
@@ -383,7 +387,9 @@ public class PlayerController : UserData
 
     public void StopRotation(BaseEventData data)
     {
-        if(this.characterStatus == CharacterStatus.rotating)
+        if(this.characterStatus == CharacterStatus.rotating && 
+           this.transform.localScale == Vector3.one && 
+           this.GetComponent<Collider2D>().enabled)
         {
             this.moveButton.PointerEffect(true);
             AudioController.Instance?.PlayAudio(0);
@@ -395,8 +401,11 @@ public class PlayerController : UserData
 
     public void StopMove(BaseEventData data)
     {
-        this.moveButton.PointerEffect(false);
-        this.StopCharacter();
+        if(this.characterStatus != CharacterStatus.nextQA)
+        {
+            this.moveButton.PointerEffect(false);
+            this.characterStatus = CharacterStatus.idling;
+        }
     }
 
     void MoveForward()
@@ -408,6 +417,7 @@ public class PlayerController : UserData
 
     public void playerReset(Vector3 newStartPostion)
     {
+        this.characterStatus = CharacterStatus.born;
         SetUI.Set(this.bornParticle, true, 1f);
         this.transform.DOScale(0f, 0f);
         if(this.playerAppearEffect != null) this.playerAppearEffect.SetActive(true);
@@ -415,6 +425,7 @@ public class PlayerController : UserData
 
         this.transform.DOScale(1f, 1f).OnComplete(() =>
         {
+            this.characterStatus = CharacterStatus.idling;
             this.playerAppearEffect.SetActive(false);
             SetUI.Set(this.bornParticle, false, 1f);
         });
@@ -423,8 +434,6 @@ public class PlayerController : UserData
         this.characterReset(newStartPostion);
         this.IsCheckedAnswer = false;
         this.IsCorrect = false;
-        this.StopCharacter();
-        this.characterStatus = CharacterStatus.rotating;
     }
 
     public void setAnswer(string content)
@@ -527,11 +536,10 @@ public class PlayerController : UserData
                             this.collectedCell.RemoveAt(this.collectedCell.Count - 1);
                         }
                     }
-                    this.characterStatus = CharacterStatus.getWord;
                     this.setAnswer(cell.content.text);
                     this.collectedCell.Add(cell);
                     cell.SetTextStatus(false);
-                    this.StopCharacter();
+                    this.characterStatus = CharacterStatus.idling;
                     var gameTimer = GameController.Instance.gameTimer;
                     int currentTime = Mathf.FloorToInt(((gameTimer.gameDuration - gameTimer.currentTime) / gameTimer.gameDuration) * 100);
                     this.checkAnswer(currentTime);
@@ -551,7 +559,15 @@ public class PlayerController : UserData
     {
         this.rb.velocity = Vector2.zero;
         this.rb.angularVelocity = 0f;
-        this.characterStatus = CharacterStatus.rotating;
+        if(this.characterStatus != CharacterStatus.born) this.characterStatus = CharacterStatus.rotating;
+        this.StopResetCoroutine();
+    }
+
+    void HoldCharacter()
+    {
+        this.rb.velocity = Vector2.zero;
+        this.rb.angularVelocity = 0f;
+        this.StopResetCoroutine();
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -583,7 +599,7 @@ public class PlayerController : UserData
 
     IEnumerator delayResetCharacter()
     {
-        if (this.characterStatus != CharacterStatus.recover)
+        if (this.GetComponent<CircleCollider2D>().enabled)
         {
             this.characterStatus = CharacterStatus.recover;
             this.transform.DOScale(0f, 1f);
@@ -616,7 +632,7 @@ public class PlayerController : UserData
                 LogController.Instance.debug($"Collision with: {collision.gameObject.name},distanceFactor: {distanceFactor}, Reduced Factor: {reducedFactor}, Distance: {distance}");
             }
             AudioController.Instance?.PlayAudio(10); //blob
-            this.StopCharacter();
+            this.characterStatus = CharacterStatus.idling;
         }
     }
 

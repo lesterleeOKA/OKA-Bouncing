@@ -186,7 +186,7 @@ public class GameController : GameBaseController
         {
             if (this.playerControllers[i] != null)
             {
-                this.playerControllers[i].characterStatus = CharacterStatus.idling;
+                this.playerControllers[i].characterStatus = CharacterStatus.nextQA;
             }
         }
     }
@@ -338,9 +338,10 @@ public class GameController : GameBaseController
 
 public enum CharacterStatus
 {
+    born,
     idling,
     rotating,
     moving,
-    getWord,
+    nextQA,
     recover
 }
