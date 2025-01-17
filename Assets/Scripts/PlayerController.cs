@@ -434,9 +434,12 @@ public class PlayerController : UserData
 
         this.transform.DOScale(1f, 1f).OnComplete(() =>
         {
-            this.characterStatus = CharacterStatus.idling;
-            this.playerAppearEffect.SetActive(false);
-            SetUI.Set(this.bornParticle, false, 1f);
+            if(this.characterStatus != CharacterStatus.nextQA)
+            {
+                this.characterStatus = CharacterStatus.idling;
+                this.playerAppearEffect.SetActive(false);
+                SetUI.Set(this.bornParticle, false, 1f);
+            }
         });
         this.deductAnswer();
         this.setAnswer("");
