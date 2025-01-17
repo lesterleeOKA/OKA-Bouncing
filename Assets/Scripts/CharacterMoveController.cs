@@ -64,13 +64,13 @@ public class CharacterMoveController : MonoBehaviour
 
     void OnPointerDown(BaseEventData data)
     {
-        Debug.Log("Pointer Down!");
+        //Debug.Log("Pointer Down!");
         OnPointerDownEvent?.Invoke(data);
     }
 
     void OnPointerUp(BaseEventData data)
     {
-        Debug.Log("Pointer Up!");
+       // Debug.Log("Pointer Up!");
         OnPointerUpEvent?.Invoke(data);
     }
 

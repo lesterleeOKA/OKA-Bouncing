@@ -45,6 +45,7 @@ public class PlayerController : UserData
     public CanvasGroup bornParticle;
     public GameObject playerAppearEffect;
     public GameObject[] answerParticles;
+    public float resetCount = 5.0f;
 
     public void Init(CharacterSet characterSet = null, Sprite[] defaultAnswerBoxes = null, Vector3 startPos = default)
     {
@@ -354,7 +355,15 @@ public class PlayerController : UserData
                     this.HoldCharacter();
                     break;
                 case CharacterStatus.recover:
-                    this.moveButton.TriggerActive(false);
+                    if(this.resetCount > 0f)
+                    {
+                        this.resetCount -= Time.deltaTime;
+                    }
+                    else
+                    {
+                        var gridManager = GameController.Instance.gridManager;
+                        this.playerReset(gridManager.newCharacterPosition);
+                    }
                     break;
             }
 
@@ -434,6 +443,7 @@ public class PlayerController : UserData
         this.characterReset(newStartPostion);
         this.IsCheckedAnswer = false;
         this.IsCorrect = false;
+        this.resetCount = 2.0f;
     }
 
     public void setAnswer(string content)
@@ -548,10 +558,7 @@ public class PlayerController : UserData
         }
         else if (other.CompareTag("Wall"))
         {
-            SetUI.SetScale(this.answerBoxCg, false);
-            AudioController.Instance?.PlayAudio(11, false, 0.5f);
-            this.deductAnswer();
-            this.resetCoroutine = StartCoroutine(this.delayResetCharacter());
+            this.ReBornCharacter();
         }
     }
 
@@ -560,14 +567,26 @@ public class PlayerController : UserData
         this.rb.velocity = Vector2.zero;
         this.rb.angularVelocity = 0f;
         if(this.characterStatus != CharacterStatus.born) this.characterStatus = CharacterStatus.rotating;
-        this.StopResetCoroutine();
     }
 
     void HoldCharacter()
     {
         this.rb.velocity = Vector2.zero;
         this.rb.angularVelocity = 0f;
-        this.StopResetCoroutine();
+    }
+
+    void ReBornCharacter()
+    {
+        if (this.GetComponent<CircleCollider2D>().enabled)
+        {
+            SetUI.SetScale(this.answerBoxCg, false);
+            AudioController.Instance?.PlayAudio(11, false, 0.5f);
+            this.deductAnswer();
+            this.characterStatus = CharacterStatus.recover;
+            this.transform.DOScale(0f, 1f);
+            this.moveButton.TriggerActive(false);
+            this.GetComponent<CircleCollider2D>().enabled = false;
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)
@@ -583,30 +602,6 @@ public class PlayerController : UserData
                     LogController.Instance.debug("Player has exited the trigger!" + other.name);
                 }
             }
-        }
-    }
-
-    private Coroutine resetCoroutine = null;
-
-    public void StopResetCoroutine()
-    {
-        if (this.resetCoroutine != null)
-        {
-            StopCoroutine(this.resetCoroutine);
-            this.resetCoroutine = null;
-        }
-    }
-
-    IEnumerator delayResetCharacter()
-    {
-        if (this.GetComponent<CircleCollider2D>().enabled)
-        {
-            this.characterStatus = CharacterStatus.recover;
-            this.transform.DOScale(0f, 1f);
-            this.GetComponent<CircleCollider2D>().enabled = false;
-            yield return new WaitForSeconds(2.0f);
-            var gridManager = GameController.Instance.gridManager;
-            this.playerReset(gridManager.newCharacterPosition);
         }
     }
 

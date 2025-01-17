@@ -67557,6 +67557,7 @@ MonoBehaviour:
   - {fileID: 3432371865498514715}
   - {fileID: 7054382200128819440}
   - {fileID: 33542515745951240}
+  resetCount: 2
 --- !u!223 &9063195682859215473
 Canvas:
   m_ObjectHideFlags: 0
@@ -67614,6 +67615,7 @@ MonoBehaviour:
     playerNumber: 0
     playerColor: {r: 0, g: 0, b: 0, a: 0}
     boardTexture: {fileID: 0}
+    defaultIcon: {fileID: 0}
     idlingTexture: {fileID: 0}
     walkingAnimationTextures: []
   frameRate: 10
