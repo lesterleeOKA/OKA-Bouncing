@@ -109,7 +109,8 @@ public class PlayerController : UserData
         if (this.moveButton == null)
         {
             this.moveButton = GameObject.FindGameObjectWithTag("P" + this.RealUserId + "-controller").GetComponent<CharacterMoveController>();
-            this.moveButton.OnPointerClickEvent += this.StopRotation;
+            this.moveButton.OnPointerDownEvent += this.StopRotation;
+            this.moveButton.OnPointerUpEvent += this.StopMove;
         }
 
         /*if (this.bloodController == null)
@@ -339,14 +340,17 @@ public class PlayerController : UserData
                     this.rb.velocity = Vector2.zero;
                     this.rb.angularVelocity = 0f;
                     this.StopResetCoroutine();
-                    this.moveButton.TriggerActive(false);
                     return;
                 case CharacterStatus.rotating:
+                    this.moveButton.TriggerActive(true);
                     Vector3 direction = Vector3.forward * rotationSpeed * Time.deltaTime * this.randomDirection;
                     this.rectTransform.Rotate(direction);
                     break;
                 case CharacterStatus.moving:
                     this.MoveForward();
+                    break;
+                case CharacterStatus.recover:
+                    this.moveButton.TriggerActive(false);
                     break;
             }
 
@@ -357,8 +361,6 @@ public class PlayerController : UserData
             }
 
             bool isMoving = this.rb.velocity.sqrMagnitude > 0.05f;
-            this.moveButton.TriggerActive(isMoving ? false : true);
-
             if (isMoving)
             {
                 this.rb.velocity *= this.reducedFactor;
@@ -383,11 +385,18 @@ public class PlayerController : UserData
     {
         if(this.characterStatus == CharacterStatus.rotating)
         {
+            this.moveButton.PointerEffect(true);
             AudioController.Instance?.PlayAudio(0);
             this.playerCurrentPosition = this.transform.localPosition;
             this.moveDirection = this.rectTransform.up;
             this.characterStatus = CharacterStatus.moving;
         }
+    }
+
+    public void StopMove(BaseEventData data)
+    {
+        this.moveButton.PointerEffect(false);
+        this.StopCharacter();
     }
 
     void MoveForward()
