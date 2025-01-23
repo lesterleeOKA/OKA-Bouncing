@@ -16,7 +16,7 @@ public class LoaderConfig : GameSetting
     protected override void Start()
     {
         base.Start();
-#if UNITY_EDITOR
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
         this.LoadGameData();
 #endif
     }
