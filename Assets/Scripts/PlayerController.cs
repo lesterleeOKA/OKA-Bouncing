@@ -175,7 +175,6 @@ public class PlayerController : UserData
             {
                 this.PlayerColor = this.characterAnimation.characterSet.playerColor;
                 this.PlayerIcons[i].playerColor = this.characterAnimation.characterSet.playerColor;
-                //this.joystick.handle.GetComponent<Image>().color = _color;
                 this.PlayerIcons[i].SetStatus(_status, _playerName, _icon);
             }
         }
