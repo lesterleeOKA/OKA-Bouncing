@@ -141,6 +141,7 @@ public class GridManager
         {
             if (!cell.isSelected)
             {
+                cell.setCellDebugStatus(status);
                 cell.setCellStatus(status);
             }
         }

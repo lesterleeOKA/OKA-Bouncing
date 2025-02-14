@@ -70,6 +70,11 @@ public class Cell : MonoBehaviour
         }
     }
 
+    public void setCellDebugStatus(bool show = false)
+    {
+        this.GetComponent<Image>().enabled = show;
+    }
+
     public void setCellEnterColor(bool stay=false, bool show = false)
     {
         if (this.cellImage != null)
