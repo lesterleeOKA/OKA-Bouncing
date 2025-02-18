@@ -37,7 +37,7 @@ public class GridManager
     private void createCell(int rowId, int columnId)
     {
         GameObject cellObject = GameObject.Instantiate(cellPrefab, this.parent != null ? this.parent : null);
-        cellObject.name = "Cell_" + rowId + "_" + columnId;
+        cellObject.name = "Cell_" + this.gridCount;
         Cell cell = cellObject.GetComponent<Cell>(); 
         cell.SetTextContent("");
         cell.row = rowId;
@@ -67,10 +67,48 @@ public class GridManager
         }
     }
 
+    public void updateNewWordPosition(Cell currentCell)
+    {
+        this.characterPositionsCellIds.Clear();
+        foreach (var cell in this.cells)
+        {
+            if (cell != null && cell.isPlayerStayed && !this.characterPositionsCellIds.Contains(cell.cellId))
+            {
+                this.characterPositionsCellIds.Add(cell.cellId);
+            }
+        }
+        var newWordId = this.GenerateUniqueRandomIntegers(1, 0, this.cells.Length, this.showCellIdList, this.characterPositionsCellIds)[0];
+        LogController.Instance.debug("new Word Position id" + newWordId);
+        this.showCellIdList.Add(newWordId);
+        var newCellVector = this.availablePositions[newWordId];
+        this.cells[newCellVector.x, newCellVector.y].SetTextContent(currentCell.content.text);
+        if (this.showCellIdList.Contains(currentCell.cellId))
+        {
+            this.showCellIdList.Remove(currentCell.cellId);
+            currentCell.SetTextContent("");
+        }
+    }
+
     public List<int> CharacterPositionsCellIds {
         get
         {
             this.characterPositionsCellIds = this.GenerateUniqueRandomIntegers(LoaderConfig.Instance.gameSetup.playerNumber, 0, this.cells.Length, this.showCellIdList);
+            return this.characterPositionsCellIds;
+        }
+    }
+
+
+
+    public List<int> CharacterStartupPositionsCellIds
+    {
+        get
+        {
+            this.characterPositionsCellIds.Clear();
+            this.characterPositionsCellIds.Add(36); // p1
+            this.characterPositionsCellIds.Add(40); // p2
+            this.characterPositionsCellIds.Add(8); // p3
+            this.characterPositionsCellIds.Add(12); // p4
+
             return this.characterPositionsCellIds;
         }
     }
@@ -175,7 +213,8 @@ public class GridManager
 
         this.showCellIdList = this.GenerateUniqueRandomIntegers(this.isMCType ? multipleWords.Length : letters.Length,
                                                                 0,
-                                                                this.cells.Length);
+                                                                this.cells.Length,
+                                                                this.characterPositionsCellIds);
 
         for (int i = 0; i < this.showCellIdList.Count; i++)
         {

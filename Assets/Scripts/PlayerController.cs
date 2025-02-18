@@ -210,8 +210,10 @@ public class PlayerController : UserData
                 this.answer = currentQuestion.answersChoics[3].ToLower();
                 break;
         }
-        if(this.answer != lowerQIDAns) 
+        if(this.answer != lowerQIDAns) { 
+            this.backToStartPosition();
             return;
+        }
 
         if (!this.IsCheckedAnswer)
         {
@@ -329,7 +331,6 @@ public class PlayerController : UserData
         this.startPosition = newStartPostion;
         this.characterCanvas.sortingOrder = this.characterOrder;
         this.characterTransform.localPosition = this.startPosition;
-        this.collectedCell.Clear();
     }
 
     void FixedUpdate()
@@ -343,9 +344,16 @@ public class PlayerController : UserData
                     this.StopCharacter();
                     return;
                 case CharacterStatus.rotating:
-                    this.moveButton.TriggerActive(true);
-                    Vector3 direction = Vector3.forward * rotationSpeed * Time.deltaTime * this.randomDirection;
-                    this.rectTransform.Rotate(direction);
+                    if(this.transform.localScale == Vector3.zero)
+                    {
+                        this.characterStatus = CharacterStatus.recover;
+                    }
+                    else
+                    {
+                        this.moveButton.TriggerActive(true);
+                        Vector3 direction = Vector3.forward * rotationSpeed * Time.deltaTime * this.randomDirection;
+                        this.rectTransform.Rotate(direction);
+                    }
                     break;
                 case CharacterStatus.moving:
                     this.MoveForward();
@@ -360,8 +368,9 @@ public class PlayerController : UserData
                     }
                     else
                     {
-                        var gridManager = GameController.Instance.gridManager;
-                        this.playerReset(gridManager.newCharacterPosition);
+                        //var gridManager = GameController.Instance.gridManager;
+                        //this.playerReset(gridManager.newCharacterPosition);
+                        this.playerReset(this.startPosition);
                     }
                     break;
             }
@@ -423,8 +432,30 @@ public class PlayerController : UserData
         //this.FaceDirection(this.moveDirection);
     }
 
+    public void backToStartPosition()
+    {
+        this.HoldCharacter();
+        this.characterStatus = CharacterStatus.born;
+        SetUI.Set(this.bornParticle, true, 1f);
+        this.transform.DOScale(0f, 0f);
+        if (this.playerAppearEffect != null) this.playerAppearEffect.SetActive(true);
+        this.GetComponent<CircleCollider2D>().enabled = true;
+
+        this.transform.DOScale(1f, 1f).OnComplete(() =>
+        {
+            if (this.characterStatus != CharacterStatus.nextQA)
+            {
+                this.characterStatus = CharacterStatus.idling;
+                this.playerAppearEffect.SetActive(false);
+                SetUI.Set(this.bornParticle, false, 1f);
+            }
+        });
+        this.characterReset(this.startPosition);
+    }
+
     public void playerReset(Vector3 newStartPostion)
     {
+        this.HoldCharacter();
         this.characterStatus = CharacterStatus.born;
         SetUI.Set(this.bornParticle, true, 1f);
         this.transform.DOScale(0f, 0f);
@@ -446,6 +477,7 @@ public class PlayerController : UserData
         this.IsCheckedAnswer = false;
         this.IsCorrect = false;
         this.resetCount = 2.0f;
+        this.collectedCell.Clear();
     }
 
     public void setAnswer(string content)
@@ -519,7 +551,8 @@ public class PlayerController : UserData
             if (this.collectedCell.Count > 0)
             {
                 var latestCell= this.collectedCell[this.collectedCell.Count - 1];
-                latestCell.SetTextStatus(true);
+                //latestCell.SetTextStatus(true);
+                gridManager.updateNewWordPosition(latestCell);
                 this.collectedCell.RemoveAt(this.collectedCell.Count - 1);
             }
         }
@@ -544,7 +577,8 @@ public class PlayerController : UserData
                         if (this.collectedCell.Count > 0)
                         {
                             var latestCell = this.collectedCell[this.collectedCell.Count - 1];
-                            latestCell.SetTextStatus(true);
+                            //latestCell.SetTextStatus(true);
+                            gridManager.updateNewWordPosition(latestCell);
                             this.collectedCell.RemoveAt(this.collectedCell.Count - 1);
                         }
                     }

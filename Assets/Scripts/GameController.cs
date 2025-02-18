@@ -37,6 +37,8 @@ public class GameController : GameBaseController
 
     private IEnumerator InitialQuestion()
     {
+        this.createPlayer();
+
         var questionController = QuestionController.Instance;
         if(questionController == null) yield break;
         questionController.nextQuestion();
@@ -55,13 +57,12 @@ public class GameController : GameBaseController
             string word = questionController.currentQuestion.correctAnswer;
             this.gridManager.UpdateGridWithWord(null, word);
         }
-        this.createPlayer();
     }
 
     void createPlayer()
     {
         var cellPositions = this.gridManager.availablePositions;
-        var characterPositionList = this.gridManager.CharacterPositionsCellIds;
+        var characterPositionList = this.gridManager.CharacterStartupPositionsCellIds;
 
         for (int i = 0; i < this.maxPlayers; i++)
         {
@@ -193,6 +194,7 @@ public class GameController : GameBaseController
 
     public void UpdateNextQuestion()
     {
+        this.playersResetPosition();
         LogController.Instance?.debug("Next Question");
         var questionController = QuestionController.Instance;
 
@@ -212,15 +214,13 @@ public class GameController : GameBaseController
                 string word = questionController.currentQuestion.correctAnswer;
                 this.gridManager.UpdateGridWithWord(null, word);
             }
-
-            this.playersResetPosition();
         }       
     }
 
     void playersResetPosition()
     {
         var cellPositions = this.gridManager.availablePositions;
-        var characterPositionList = this.gridManager.CharacterPositionsCellIds;
+        var characterPositionList = this.gridManager.CharacterStartupPositionsCellIds;
 
         for (int i = 0; i < this.playerNumber; i++)
         {

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18028378, g: 0.22571412, b: 0.30692285, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028331, g: 0.2257133, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -408,12 +408,12 @@ MonoBehaviour:
     allTextures: []
     useGCCollect: 1
     bgTexture: {fileID: 2800000, guid: 90ab1338a7be9254d95f754f43fb40b0, type: 3}
-    previewTexture: {fileID: 2800000, guid: de4dc1cf6b3f10d49b10d93297e22796, type: 3}
+    previewTexture: {fileID: 2800000, guid: 511e9f9b8c4b3154f9c753f81c327a02, type: 3}
     gridTexture: {fileID: 0}
     gameBackground: {fileID: 0}
     gamePreview: {fileID: 0}
     instructions: {fileID: 0}
-    gameTime: 0
+    gameTime: 300
     playersMovingSpeed: 5
     playersRotationSpeed: 200
     retry_times: 3
@@ -757,7 +757,7 @@ PrefabInstance:
       objectReference: {fileID: 12800000, guid: 65e0021e32122fe4eafa107cecf8fd43, type: 3}
     - target: {fileID: 1761761257498461912, guid: bc74bb1d218bbcc4daf665d7ff132001, type: 3}
       propertyPath: m_Text
-      value: Ver 1.03
+      value: Ver 1.04
       objectReference: {fileID: 0}
     - target: {fileID: 1761761257498461912, guid: bc74bb1d218bbcc4daf665d7ff132001, type: 3}
       propertyPath: m_FontData.m_Font
