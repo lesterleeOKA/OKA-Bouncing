@@ -1,28 +1,114 @@
 {
   "questions": [
     {
-      "qid": "p1u1-a1",
+      "qid": "p1u5-e1",
       "questionType": "text",
-      "question": "What is the color of apple?",
+      "question": "I have black and white fur, and I love to eat bamboo.",
       "answers": [
-        "red",
-        "blue",
-        "purple",
-        "black"
+        "Zebra",
+        "Tiger",
+        "Panda"
       ],
-      "correctAnswer": "red"
+      "correctAnswer": "Panda"
     },
     {
-      "qid": "p1u1-a2",
+      "qid": "p1u5-e2",
       "questionType": "text",
-      "question": "What is the color of banana?",
+      "question": "I have a long nose that can pick up things.",
       "answers": [
-        "red",
-        "yellow",
-        "purple",
-        "black"
+        "Elephant",
+        "Giraffe",
+        "Rabbit"
       ],
-      "correctAnswer": "yellow"
+      "correctAnswer": "Elephant"
+    },
+    {
+      "qid": "p1u5-e3",
+      "questionType": "text",
+      "question": "My ears are so long, they almost touch the ground.",
+      "answers": [
+        "Rabbit",
+        "Monkey",
+        "Giraffe"
+      ],
+      "correctAnswer": "Rabbit"
+    },
+    {
+      "qid": "p1u5-e4",
+      "questionType": "text",
+      "question": "I have a long neck. I can touch the leaves.",
+      "answers": [
+        "Elephant",
+        "Giraffe",
+        "Monkey"
+      ],
+      "correctAnswer": "Giraffe"
+    },
+    {
+      "qid": "p1u5-e5",
+      "questionType": "text",
+      "question": "I'm the king of the jungle. I have a loud roar.",
+      "answers": [
+        "Hippo",
+        "Snake",
+        "Lion"
+      ],
+      "correctAnswer": "Lion"
+    },
+    {
+      "qid": "p1u5-e6",
+      "questionType": "text",
+      "question": "I have a round tummy and a short tail. My thick brown fur keeps me warm.",
+      "answers": [
+        "Panda",
+        "Bear",
+        "Hippo"
+      ],
+      "correctAnswer": "Bear"
+    },
+    {
+      "qid": "p1u5-e7",
+      "questionType": "text",
+      "question": "I am long. I have no legs and I slide.",
+      "answers": [
+        "Giraffe",
+        "Tiger",
+        "Snake"
+      ],
+      "correctAnswer": "Snake"
+    },
+    {
+      "qid": "p1u5-e8",
+      "questionType": "text",
+      "question": "I have black and white stripes. I run on the grass.",
+      "answers": [
+        "Zebra",
+        "Tiger",
+        "Panda"
+      ],
+      "correctAnswer": "Zebra"
+    },
+    {
+      "qid": "p1u5-e9",
+      "questionType": "text",
+      "question": "I have a long tail and I swing from tree to tree.",
+      "answers": [
+        "Rabbit",
+        "Monkey",
+        "Giraffe"
+      ],
+      "correctAnswer": "Monkey"
+    },
+    {
+      "qid": "p1u5-e10",
+      "questionType": "text",
+      "question": "I am gray in color. I live near the river.",
+      "answers": [
+        "Tiger",
+        "Crocodile",
+        "Hippo"
+      ],
+      "correctAnswer": "Hippo"
     },
     {
       "qid": "p6u1-c1",
