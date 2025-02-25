@@ -1,6 +1,226 @@
 {
   "questions": [
     {
+      "qid": "p1u1-a1",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Good morning",
+        "good afternoon",
+        "good night"
+      ],
+      "correctAnswer": "Good afternoon"
+    },
+    {
+      "qid": "p1u1-a2",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Good morning",
+        "good afternoon",
+        "goodbye"
+      ],
+      "correctAnswer": "Good morning"
+    },
+    {
+      "qid": "p1u1-a3",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Principal",
+        "friend",
+        "teacher"
+      ],
+      "correctAnswer": "Teacher"
+    },
+    {
+      "qid": "p1u1-a4",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Greek",
+        "greet",
+        "greed"
+      ],
+      "correctAnswer": "Greet"
+    },
+    {
+      "qid": "p1u1-a5",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Moniter",
+        "monitor",
+        "moniker"
+      ],
+      "correctAnswer": "Monitor"
+    },
+    {
+      "qid": "p1u1-a6",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Schoolmate",
+        "classroom",
+        "classmate"
+      ],
+      "correctAnswer": "Classmate"
+    },
+    {
+      "qid": "p1u1-a7",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Gardener",
+        "gadener",
+        "gardenor"
+      ],
+      "correctAnswer": "Gardener"
+    },
+    {
+      "qid": "p1u1-a8",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Hello",
+        "hallo",
+        "hullo"
+      ],
+      "correctAnswer": "Hello"
+    },
+    {
+      "qid": "p1u1-a9",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "freind",
+        "fried",
+        "friend"
+      ],
+      "correctAnswer": "Friend"
+    },
+    {
+      "qid": "p1u1-a10",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Good morning",
+        "good afternoon",
+        "goodbye"
+      ],
+      "correctAnswer": "Goodbye"
+    },
+    {
+      "qid": "p1u1-a11",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Janitor",
+        "lender",
+        "leader"
+      ],
+      "correctAnswer": "Leader"
+    },
+    {
+      "qid": "p1u1-a12",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Princes",
+        "principle",
+        "princess"
+      ],
+      "correctAnswer": "Principal"
+    },
+    {
+      "qid": "p1u1-a13",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Monitor",
+        "driver",
+        "janitor"
+      ],
+      "correctAnswer": "Driver"
+    },
+    {
+      "qid": "p1u1-a14",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Cockroach",
+        "coach",
+        "couch"
+      ],
+      "correctAnswer": "Coach"
+    },
+    {
+      "qid": "p1u1-a15",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Library",
+        "libraries",
+        "librarian"
+      ],
+      "correctAnswer": "Librarian"
+    },
+    {
+      "qid": "p1u1-a16",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "English",
+        "Chinese",
+        "maths"
+      ],
+      "correctAnswer": "English"
+    },
+    {
+      "qid": "p1u1-a17",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "English",
+        "Chinese",
+        "maths"
+      ],
+      "correctAnswer": "Chinese"
+    },
+    {
+      "qid": "p1u1-a18",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Leader",
+        "driver",
+        "janitor"
+      ],
+      "correctAnswer": "Janitor"
+    },
+    {
+      "qid": "p1u1-a19",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Students",
+        "student",
+        "study"
+      ],
+      "correctAnswer": "Student"
+    },
+    {
+      "qid": "p1u1-a20",
+      "questionType": "audio",
+      "question": "",
+      "answers": [
+        "Prefect",
+        "perfect",
+        "principal"
+      ],
+      "correctAnswer": "Prefect"
+    },
+    {
       "qid": "p1u5-e1",
       "questionType": "text",
       "question": "I have black and white fur, and I love to eat bamboo.",
